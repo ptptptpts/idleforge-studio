@@ -1,0 +1,9 @@
+{
+  "name": "idleforge-studio",
+  "version": "1.0.0",
+  "description": "Deterministic Math Engine, 4-Policy Variance Simulator & Multi-Engine Exporter for Incremental & Hybrid Games (Zero AI)",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/core.test.mjs"
+  }
+}

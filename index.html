@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>IdleForge Studio — 증분형·아이들러·하이브리드 엔진 플랫폼</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #090d16;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .studio-card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 0.75rem;
+    }
+    .studio-card-accent {
+      background: linear-gradient(145deg, #111827 0%, #0f172a 100%);
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+    }
+    .roi-best-affordable {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.45), 0 4px 16px -2px rgba(16, 185, 129, 0.2);
+    }
+    .roi-best-target {
+      border-color: #38bdf8 !important;
+    }
+    .tab-active {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+    .tab-inactive {
+      background-color: #1e293b;
+      color: #94a3b8;
+      border-color: #334155;
+    }
+    .tab-inactive:hover {
+      background-color: #334155;
+      color: #f1f5f9;
+    }
+    input[type="range"] {
+      accent-color: #3b82f6;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+    /* Complete Self-Contained Responsive Fallback CSS (Zero backslash escapes) */
+    html, body { max-width: 100%; overflow-x: hidden; background-color: #090d16; color: #e2e8f0; }
+    .hidden { display: none !important; }
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .flex { display: flex; }
+    .inline-flex { display: inline-flex; }
+    .grid { display: grid; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .flex-1 { flex: 1 1 0%; }
+    .items-center { align-items: center; }
+    .items-baseline { align-items: baseline; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .w-9 { width: 2.25rem; }
+    .h-9 { height: 2.25rem; }
+    .w-3 { width: 0.75rem; }
+    .h-3 { height: 0.75rem; }
+    .w-4 { width: 1rem; }
+    .h-4 { height: 1rem; }
+    .h-2 { height: 0.5rem; }
+    .h-5 { height: 1.25rem; }
+    .h-36 { height: 9rem; }
+    .h-64 { height: 16rem; }
+    .h-72 { height: 18rem; }
+    .max-w-7xl { max-width: 80rem; }
+    .max-w-lg { max-width: 32rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .p-1 { padding: 0.25rem; }
+    .p-2 { padding: 0.5rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .pb-3 { padding-bottom: 0.75rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .text-xs { font-size: 0.75rem; line-height: 1.15rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-base { font-size: 1rem; line-height: 1.5rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.6rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .font-extrabold { font-weight: 800; }
+    .text-white { color: #ffffff; }
+    .text-slate-100 { color: #f1f5f9; }
+    .text-slate-200 { color: #e2e8f0; }
+    .text-slate-300 { color: #cbd5e1; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-500 { color: #64748b; }
+    .text-emerald-300 { color: #6ee7b7; }
+    .text-emerald-400 { color: #34d399; }
+    .text-sky-200 { color: #bae6fd; }
+    .text-sky-300 { color: #7dd3fc; }
+    .text-sky-400 { color: #38bdf8; }
+    .text-amber-300 { color: #fcd34d; }
+    .text-amber-400 { color: #fbbf24; }
+    .text-rose-300 { color: #fda4af; }
+    .text-rose-400 { color: #fb7185; }
+    .text-indigo-200 { color: #c7d2fe; }
+    .text-indigo-300 { color: #a5b4fc; }
+    .text-purple-300 { color: #d8b4fe; }
+    .text-purple-400 { color: #c084fc; }
+    .text-blue-100 { color: #dbeafe; }
+    .text-blue-300 { color: #93c5fd; }
+    .text-blue-400 { color: #60a5fa; }
+    .bg-slate-950 { background-color: #020617; }
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .bg-blue-600 { background-color: #2563eb; }
+    .bg-blue-950 { background-color: #172554; }
+    .bg-emerald-600 { background-color: #059669; }
+    .bg-emerald-700 { background-color: #047857; }
+    .bg-emerald-950 { background-color: #022c22; }
+    .bg-indigo-900 { background-color: #312e81; }
+    .bg-indigo-950 { background-color: #1e1b4b; }
+    .bg-purple-700 { background-color: #7e22ce; }
+    .bg-purple-950 { background-color: #3b0764; }
+    .bg-amber-950 { background-color: #451a03; }
+    .bg-rose-950 { background-color: #4c0519; }
+    .bg-sky-500 { background-color: #0ea5e9; }
+    .bg-sky-900 { background-color: #0c4a6e; }
+    .bg-emerald-400 { background-color: #34d399; }
+    .bg-sky-400 { background-color: #38bdf8; }
+    .bg-amber-400 { background-color: #fbbf24; }
+    .bg-rose-400 { background-color: #fb7185; }
+    .border { border-width: 1px; border-style: solid; border-color: #1e293b; }
+    .border-b { border-bottom: 1px solid #1e293b; }
+    .border-t { border-top: 1px solid #1e293b; }
+    .border-slate-700 { border-color: #334155; }
+    .border-slate-800 { border-color: #1e293b; }
+    .border-blue-400 { border-color: #60a5fa; }
+    .border-blue-800 { border-color: #1e40af; }
+    .border-emerald-500 { border-color: #10b981; }
+    .border-emerald-700 { border-color: #047857; }
+    .border-emerald-800 { border-color: #065f46; }
+    .border-indigo-600 { border-color: #4f46e5; }
+    .border-indigo-700 { border-color: #4338ca; }
+    .border-purple-500 { border-color: #a855f7; }
+    .border-purple-800 { border-color: #6b21a8; }
+    .rounded { border-radius: 0.375rem; }
+    .rounded-sm { border-radius: 0.125rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-full { border-radius: 9999px; }
+    .overflow-hidden { overflow: hidden; }
+    .overflow-auto { overflow: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .relative { position: relative; }
+    .sticky { position: sticky; }
+    .fixed { position: fixed; }
+    .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+    .top-0 { top: 0; }
+    .z-30 { z-index: 30; }
+    .z-50 { z-index: 50; }
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stack-md > * + * { margin-top: 0.75rem; }
+    .stack-lg > * + * { margin-top: 1rem; }
+    button, select, input, textarea { font-family: inherit; color: inherit; background-color: #0f172a; border: 1px solid #334155; }
+    button { cursor: pointer; }
+    pre { margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 420px; }
+    #schemaGeneratorList { max-height: 460px; }
+    #saveModalBackdrop { background-color: rgba(2, 6, 23, 0.82); }
+    @media (min-width: 640px) {
+      .sm-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sm-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .sm-row { flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+    @media (min-width: 768px) {
+      .md-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .md-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      .lg-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .lg-grid-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+      .lg-col-5 { grid-column: span 5 / span 5; }
+      .lg-col-6 { grid-column: span 6 / span 6; }
+      .lg-col-7 { grid-column: span 7 / span 7; }
+      .lg-row { flex-direction: row; align-items: center; justify-content: space-between; }
+      .lg-hide { display: none !important; }
+      .lg-show-flex { display: inline-flex !important; }
+    }
+
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+
+  <!-- TOP NAVIGATION & GLOBAL STATUS BAR -->
+  <header class="sticky top-0 z-30 bg-slate-900 border-b border-slate-800 px-3 py-2.5 sm:px-5">
+    <div class="max-w-7xl mx-auto flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between lg-row">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center font-extrabold text-white shadow">IF</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm sm:text-base font-bold tracking-tight text-white">IdleForge Studio</h1>
+              <span class="text-xs px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 mono">TS Engine v1.0</span>
+            </div>
+            <p class="text-xs text-slate-400 hidden sm:block">증분·아이들러·하이브리드 수식 스키마 · 4대 편차 시뮬레이터 · 타 엔진 코드 익스포터</p>
+          </div>
+        </div>
+
+        <button id="btnOpenSaveModal" type="button" class="lg:hidden lg-hide px-3 py-2 min-h-[44px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700">
+          세이브/백업
+        </button>
+      </div>
+
+      <!-- Preset Selector + Precision Toggle + Save -->
+      <div class="flex flex-wrap items-center gap-2">
+        <label for="presetSelect" class="text-xs text-slate-400 font-medium">장르 프리셋:</label>
+        <select id="presetSelect" class="bg-slate-950 border border-slate-700 text-slate-100 text-xs rounded-lg px-2.5 py-2 min-h-[44px] focus:outline-none focus:border-blue-500">
+          <option value="vampire_survivor">1. Vampire Survivors × Idle (뱀서라이크 혼합)</option>
+          <option value="deep_space_clicker">2. Quantum Dyson Idle (정통 하드코어 증분형)</option>
+          <option value="fps_looter_idle">3. Cyber Mercenary FPS × Idle (FPS 루트슈터 혼합)</option>
+        </select>
+
+        <button id="btnTogglePrecision" type="button" class="px-3 py-2 min-h-[44px] rounded-lg bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-700 text-xs font-semibold mono">
+          정밀도: <span id="lblPrecisionMode">StandardDouble</span>
+        </button>
+
+        <button id="btnOpenSaveModalDesktop" type="button" class="hidden lg:inline-flex lg-show-flex items-center px-3 py-2 min-h-[44px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700">
+          세이브 / 스키마 스냅샷
+        </button>
+      </div>
+    </div>
+
+    <!-- Main 4-Tab Bar -->
+    <div class="max-w-7xl mx-auto mt-2.5 grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-1.5">
+      <button id="tabBtn_schema" data-tab="schema" type="button" class="tab-btn tab-active px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
+        <span>1. 수치·편차 시뮬레이터</span>
+      </button>
+      <button id="tabBtn_bridge" data-tab="bridge" type="button" class="tab-btn tab-inactive px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
+        <span>2. 액션 브릿지·스탯 매퍼</span>
+      </button>
+      <button id="tabBtn_sandbox" data-tab="sandbox" type="button" class="tab-btn tab-inactive px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
+        <span>3. 웹 라이브 프로토타이퍼</span>
+      </button>
+      <button id="tabBtn_export" data-tab="export" type="button" class="tab-btn tab-inactive px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
+        <span>4. 멀티엔진 코드 익스포터</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 py-4 sm:px-5 space-y-5">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: SCHEMA EDITOR & 4-POLICY VARIANCE SIMULATOR (Modules 1, 2&6, 10) -->
+    <!-- =================================================================== -->
+    <section id="panel_schema" class="space-y-4 stack-lg">
+      <!-- Top KPI Strip from Simulation -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 lg-grid-4 gap-2.5">
+        <div class="studio-card p-3">
+          <div class="text-xs text-slate-400">최선(Optimal) 클리어 예상</div>
+          <div id="kpiOptimalClear" class="text-lg sm:text-xl font-bold text-emerald-400 mono mt-0.5">28.4 분</div>
+          <div id="kpiOptimalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 8.5분 | 총 3회 환생</div>
+        </div>
+        <div class="studio-card p-3">
+          <div class="text-xs text-slate-400">일반(Normal) 클리어 예상</div>
+          <div id="kpiNormalClear" class="text-lg sm:text-xl font-bold text-sky-400 mono mt-0.5">44.2 분</div>
+          <div id="kpiNormalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 13.0분 | 총 2회 환생</div>
+        </div>
+        <div class="studio-card p-3">
+          <div class="text-xs text-slate-400">랜덤(Random) 클리어 예상</div>
+          <div id="kpiRandomClear" class="text-lg sm:text-xl font-bold text-amber-400 mono mt-0.5">68.5 분</div>
+          <div id="kpiRandomPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 18.2분 | 편차 대역</div>
+        </div>
+        <div class="studio-card p-3">
+          <div class="text-xs text-slate-400">최악(Worst) 클리어 상한선</div>
+          <div id="kpiWorstClear" class="text-lg sm:text-xl font-bold text-rose-400 mono mt-0.5">114.0 분</div>
+          <div id="kpiWorstPrestige" class="text-xs text-slate-400 mt-0.5">정체 벽(Wall) 경보 확인</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4">
+        <!-- Left Column: TS Schema & Generator Numerical Editor (5 cols) -->
+        <div class="lg:col-span-5 lg-col-5 studio-card p-4 space-y-4 stack-lg">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div>
+              <h2 class="text-sm font-bold text-white">1. TypeScript 수치·수식 스키마 에디터</h2>
+              <p class="text-xs text-slate-400">수치 조정 시 우측 4대 플레이 편차 그래프가 즉시 재계산됩니다</p>
+            </div>
+            <button id="btnResetPreset" type="button" class="px-2.5 py-1.5 min-h-[38px] rounded bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+              초기화
+            </button>
+          </div>
+
+          <!-- Global Economy & Prestige Formula Params -->
+          <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2.5 stack-md">
+            <div class="text-xs font-semibold text-blue-300 mono">전역 환생 & 클리어 수식: PrestigePts = floor((Run ÷ Threshold)^Exp × 5)</div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label for="inpPrestigeThreshold" class="block text-xs text-slate-400 mb-1">첫 환생 기준 재화 (Threshold)</label>
+                <input id="inpPrestigeThreshold" type="number" step="5000" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs mono text-white" value="50000" />
+              </div>
+              <div>
+                <label for="inpClearGoal" class="block text-xs text-slate-400 mb-1">최종 클리어 목표 재화 (Goal)</label>
+                <input id="inpClearGoal" type="number" step="1000000" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs mono text-white" value="250000000" />
+              </div>
+              <div>
+                <label for="inpPrestigeExp" class="block text-xs text-slate-400 mb-1">환생 지수 (Exp: <span id="valPrestigeExp" class="mono text-sky-300">0.48</span>)</label>
+                <input id="inpPrestigeExp" type="range" min="0.30" max="0.70" step="0.02" value="0.48" class="w-full" />
+              </div>
+              <div>
+                <label for="inpPrestigeScale" class="block text-xs text-slate-400 mb-1">포인트당 배율 (<span id="valPrestigeScale" class="mono text-sky-300">+20%</span>)</label>
+                <input id="inpPrestigeScale" type="range" min="0.05" max="0.50" step="0.02" value="0.20" class="w-full" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Generators List Editor -->
+          <div class="space-y-2.5 stack-md">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-300">생산기(Generator) 티어별 파라미터 (Cost = Base × Growth^Lv)</span>
+              <span class="text-xs text-slate-400 mono">Softcap 감쇠 포함</span>
+            </div>
+            <div id="schemaGeneratorList" class="space-y-2.5 stack-md max-h-[460px] overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+
+        <!-- Right Column: 4-Policy Variance & Prestige Cycle Simulator (7 cols) -->
+        <div class="lg:col-span-7 lg-col-7 space-y-4 stack-lg">
+          <div class="studio-card p-4 space-y-3 stack-md">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+              <div>
+                <h2 class="text-sm font-bold text-white">2 & 6. 플레이 편차(최선·일반·랜덤·최악) 경제 & 환생 시뮬레이터</h2>
+                <p class="text-xs text-slate-400">의사결정 편차 대역(Confidence Band), 환생 마커(P1~Pn), 정체 벽(Wall) 자동 진단</p>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <select id="simHorizonSelect" class="bg-slate-950 border border-slate-700 text-xs rounded px-2.5 py-1.5 min-h-[38px] text-slate-200 mono">
+                  <option value="60">시뮬 시간: 60분</option>
+                  <option value="120" selected>시뮬 시간: 120분</option>
+                  <option value="240">시뮬 시간: 240분</option>
+                </select>
+                <button id="btnToggleScale" type="button" class="px-2.5 py-1.5 min-h-[38px] rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-sky-300 border border-slate-700 mono">
+                  스케일: <span id="lblChartScale">Log10</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="flex flex-wrap items-center gap-3 text-xs">
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-400 inline-block"></span>언제나 최선 (Optimal ROI)</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-sky-400 inline-block"></span>일반적 플레이 (Human Heuristic)</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-400 inline-block"></span>랜덤 플레이 (Stochastic)</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-rose-400 inline-block"></span>언제나 최악 (Worst Lower Bound)</span>
+            </div>
+
+            <!-- Primary Economy Curve Canvas -->
+            <div class="relative w-full h-64 sm:h-72 bg-slate-950 rounded-lg border border-slate-800 p-2">
+              <canvas id="economyVarianceCanvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Secondary Prestige Cycle Breakdown & Wall Diagnostics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 md-grid-2 gap-3 pt-1">
+              <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-slate-200">환생 사이클별 소요 시간 (Cycle 1~N)</span>
+                  <span class="text-xs text-slate-400 mono">단위: 분(min)</span>
+                </div>
+                <div class="relative w-full h-36">
+                  <canvas id="prestigeCycleCanvas" class="w-full h-full block"></canvas>
+                </div>
+              </div>
+
+              <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-slate-200">밸런스 진단 & 정체 구간(Wall) 리포트</span>
+                    <span id="badgeBalanceHealth" class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono">건전 (Healthy)</span>
+                  </div>
+                  <div id="wallDiagnosticsList" class="space-y-1.5 text-xs text-slate-300 max-h-28 overflow-y-auto"></div>
+                </div>
+                <div class="pt-2 border-t border-slate-800 mt-2 flex items-center justify-between text-xs text-slate-400">
+                  <span>최선 vs 최악 클리어 배차:</span>
+                  <span id="lblSpreadRatio" class="mono font-bold text-amber-300">4.01×</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: ACTION GENRE BRIDGE & STAT MAPPER (Modules 5 & 9)            -->
+    <!-- =================================================================== -->
+    <section id="panel_bridge" class="hidden space-y-4 stack-lg">
+      <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4">
+        <!-- Module 5: Action / External Genre Event Bridge -->
+        <div class="lg:col-span-6 lg-col-6 studio-card p-4 space-y-4 stack-lg">
+          <div class="border-b border-slate-800 pb-2.5 flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold text-white">5. 액션·장르 브릿지 (뱀서라이크 / FPS / RPG 이벤트 연동)</h2>
+              <p class="text-xs text-slate-400">직접 이동·사격·처치 등 외부 엔진의 액션 빈도가 경제에 미치는 비중을 설계합니다</p>
+            </div>
+            <label class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-300 cursor-pointer">
+              <input id="chkActionBridgeEnabled" type="checkbox" checked class="w-4 h-4 rounded" />
+              <span>브릿지 활성</span>
+            </label>
+          </div>
+
+          <div class="space-y-3 stack-md bg-slate-900 p-3.5 rounded-lg border border-slate-800">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span id="lblActionEventName" class="text-slate-300 font-medium">초당 몬스터 처치 (Kills/sec)</span>
+                <span id="valEventsPerSec" class="mono text-emerald-400 font-bold">3.5 / sec</span>
+              </div>
+              <input id="rngEventsPerSec" type="range" min="0.2" max="15.0" step="0.2" value="3.5" class="w-full" />
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-slate-300 font-medium">처치/타격당 SPS 비례 보너스 (SPS Synergy Ratio)</span>
+                <span id="valSpsRatioBonus" class="mono text-sky-400 font-bold">14% of SPS</span>
+              </div>
+              <input id="rngSpsRatioBonus" type="range" min="0.01" max="0.50" step="0.01" value="0.14" class="w-full" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300">크리티컬/헤드샷 확률</span>
+                  <span id="valCritChance" class="mono text-amber-400 font-bold">22%</span>
+                </div>
+                <input id="rngCritChance" type="range" min="0" max="0.80" step="0.02" value="0.22" class="w-full" />
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300">크리티컬 보상 배율</span>
+                  <span id="valCritMult" class="mono text-amber-400 font-bold">3.0×</span>
+                </div>
+                <input id="rngCritMult" type="range" min="1.5" max="10.0" step="0.5" value="3.0" class="w-full" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300">보스/웨이브 클리어 주기</span>
+                  <span id="valWaveInterval" class="mono text-indigo-300 font-bold">30초</span>
+                </div>
+                <input id="rngWaveInterval" type="range" min="10" max="120" step="5" value="30" class="w-full" />
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-300">웨이브 클리어 보상 (×SPS)</span>
+                  <span id="valWaveMult" class="mono text-indigo-300 font-bold">12× SPS</span>
+                </div>
+                <input id="rngWaveMult" type="range" min="2" max="50" step="2" value="12" class="w-full" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Income Share Breakdown Bar -->
+          <div class="bg-slate-900 p-3.5 rounded-lg border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-200">방치형 패시브 vs 액션 브릿지 수익 비중 분석</span>
+              <span id="lblActionShareSummary" class="mono text-emerald-300 font-bold">액션 비중: 56.4%</span>
+            </div>
+            <div class="w-full h-5 rounded-full bg-slate-950 overflow-hidden flex border border-slate-700">
+              <div id="barPassiveShare" class="bg-blue-600 h-full flex items-center justify-center text-[10px] font-bold text-white transition-all" style="width: 44%">패시브 44%</div>
+              <div id="barActionShare" class="bg-emerald-600 h-full flex items-center justify-center text-[10px] font-bold text-white transition-all" style="width: 56%">액션 56%</div>
+            </div>
+            <p class="text-xs text-slate-400">
+              외부 게임 엔진에서 <code class="mono text-sky-300">triggerExternalActionEvent(isCrit, isWaveClear)</code> 호출 시 위 수식에 따라 재화가 즉시 지급됩니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Module 9: Stat Mapper Layer -->
+        <div class="lg:col-span-6 lg-col-6 studio-card p-4 space-y-4 stack-lg">
+          <div class="border-b border-slate-800 pb-2.5">
+            <h2 class="text-sm font-bold text-white">9. 스탯 변환 매핑 레이어 (Stat Mapper: 거대 경제 수치 → 물리/전투 스탯)</h2>
+            <p class="text-xs text-slate-400">증분 엔진의 기하급수적 수치(10^15 등)를 3D/2D 게임 엔진의 물리 한계치(이속, 탄수, 쿨감)로 점근/로그 매핑합니다</p>
+          </div>
+
+          <!-- Sample Progress Slider to Preview Stat Mapping at Any Stage of Game -->
+          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-medium">진행도 테스트 슬라이더 (가상 플레이 단계별 물리 스탯 미리보기):</span>
+              <span id="lblStatPreviewStage" class="mono text-sky-400 font-bold">중반부 (총 레벨 85 / 10^6 재화)</span>
+            </div>
+            <input id="rngStatPreviewStage" type="range" min="1" max="100" step="1" value="35" class="w-full" />
+          </div>
+
+          <!-- Mapped Stat Cards -->
+          <div id="statMapperCards" class="space-y-2.5 stack-md"></div>
+
+          <!-- Asymptotic Curve Preview Canvas -->
+          <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <span class="text-slate-300 font-semibold">점근선 수렴 커브 (Asymptotic Cap Curve: Base + (Cap - Base) × X ÷ (X + HalfPoint))</span>
+              <span class="mono text-xs text-emerald-400">물리 엔진 오버플로우 방지</span>
+            </div>
+            <div class="relative w-full h-36">
+              <canvas id="statCurveCanvas" class="w-full h-full block"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: WEB LIVE PROTOTYPER & ROI SANDBOX (Module 4)                 -->
+    <!-- =================================================================== -->
+    <section id="panel_sandbox" class="hidden space-y-4 stack-lg">
+      <!-- Live Dashboard Header -->
+      <div class="studio-card-accent p-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4 items-center">
+          <div class="lg:col-span-5 lg-col-5 space-y-1">
+            <div class="flex items-center gap-2">
+              <span id="sandboxCurrencyTitle" class="text-xs font-semibold uppercase tracking-wider text-blue-400">Soul Shard (소울 샤드)</span>
+              <span id="sandboxPrestigeBadge" class="text-xs px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 mono">환생 배율: 1.00×</span>
+            </div>
+            <div class="flex items-baseline gap-3">
+              <div id="sandboxCurrencyValue" class="text-2xl sm:text-3xl font-extrabold text-white mono">0.0</div>
+              <div id="sandboxSPSValue" class="text-xs sm:text-sm font-semibold text-emerald-400 mono">+1.4 / sec</div>
+            </div>
+            <div class="text-xs text-slate-400 flex items-center gap-3 mono">
+              <span>누적 획득: <strong id="sandboxLifetimeValue" class="text-slate-200">0</strong></span>
+              <span>경과 게임 시간: <strong id="sandboxElapsedTime" class="text-sky-300">0분 0초</strong></span>
+            </div>
+          </div>
+
+          <!-- Speed Controls & Auto-Bot Mode -->
+          <div class="lg:col-span-7 lg-col-7 flex flex-wrap items-center justify-start lg:justify-end gap-2">
+            <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800">
+              <button type="button" data-speed="1" class="speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono bg-blue-600 text-white">1×</button>
+              <button type="button" data-speed="10" class="speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono text-slate-400 hover:text-white">10×</button>
+              <button type="button" data-speed="100" class="speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono text-slate-400 hover:text-white">100×</button>
+              <button type="button" data-speed="600" class="speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono text-slate-400 hover:text-white">600×</button>
+            </div>
+
+            <select id="sandboxBotSelect" class="bg-slate-950 border border-slate-700 text-xs rounded-lg px-2.5 py-2 min-h-[42px] text-slate-200 font-medium">
+              <option value="manual">수동 플레이 (Manual)</option>
+              <option value="optimal">오토봇: 언제나 최선 (Optimal ROI)</option>
+              <option value="normal">오토봇: 일반 플레이 (Normal)</option>
+              <option value="worst">오토봇: 언제나 최악 (Worst ROI)</option>
+            </select>
+
+            <button id="btnSandboxPrestige" type="button" class="px-3 py-2 min-h-[42px] rounded-lg bg-purple-700 hover:bg-purple-600 disabled:opacity-40 text-xs font-bold text-white border border-purple-500 transition">
+              환생 실행 (<span id="lblPendingPrestige">+0 유물</span>)
+            </button>
+
+            <button id="btnSandboxReset" type="button" class="px-2.5 py-2 min-h-[42px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
+              리셋
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4">
+        <!-- Left: Action & Click Trigger Pad + Mapped Live Combat Stats (5 cols) -->
+        <div class="lg:col-span-5 lg-col-5 space-y-4 stack-lg">
+          <div class="studio-card p-4 space-y-3 stack-md">
+            <h3 class="text-sm font-bold text-white">직접 조작 & 외부 장르 액션 트리거 패드</h3>
+            <p class="text-xs text-slate-400">클릭만 하는 방식, 직접 움직이며 몬스터를 잡는 방식(뱀서/FPS)을 모두 시뮬레이션합니다.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 sm-grid-2 gap-2.5">
+              <button id="btnManualClick" type="button" class="p-3.5 min-h-[64px] rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-left border border-blue-400 shadow transition">
+                <div class="text-xs text-blue-100 font-medium">기본 코어 클릭</div>
+                <div id="lblManualClickGain" class="text-base font-extrabold text-white mono mt-0.5">+2.5 SS 획득</div>
+              </button>
+
+              <button id="btnTriggerKillEvent" type="button" class="p-3.5 min-h-[64px] rounded-xl bg-emerald-700 hover:bg-emerald-600 active:scale-[0.99] text-left border border-emerald-500 shadow transition">
+                <div class="text-xs text-emerald-100 font-medium">액션 브릿지: 처치/명중</div>
+                <div id="lblActionKillGain" class="text-base font-extrabold text-white mono mt-0.5">+3.4 SS (크리 22%)</div>
+              </button>
+            </div>
+
+            <button id="btnTriggerWaveClear" type="button" class="w-full p-3 min-h-[48px] rounded-xl bg-indigo-900 hover:bg-indigo-800 text-left border border-indigo-600 flex items-center justify-between transition">
+              <div>
+                <div class="text-xs font-semibold text-indigo-200">웨이브 클리어 / 보스 처치 이벤트 발생</div>
+                <div class="text-[11px] text-indigo-300">외부 게임 엔진에서 스테이지 돌파 시 호출되는 대량 보상</div>
+              </div>
+              <span id="lblWaveClearGain" class="text-sm font-extrabold text-amber-300 mono">+16.8 SS</span>
+            </button>
+          </div>
+
+          <!-- Live Mapped Engine Combat Stats -->
+          <div class="studio-card p-4 space-y-2.5 stack-md">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-white">실시간 타 엔진 전투/물리 스탯 출력값</h3>
+              <span class="text-xs text-slate-400 mono">getMappedCombatStats()</span>
+            </div>
+            <div id="sandboxLiveMappedStats" class="grid grid-cols-2 gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Right: Generator Purchase Cards with Live ROI & Payback Highlighting (7 cols) -->
+        <div class="lg:col-span-7 lg-col-7 studio-card p-4 space-y-3 stack-md">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+            <div>
+              <h3 class="text-sm font-bold text-white">생산기 구매 & 실시간 수학적 ROI 하이라이터</h3>
+              <p class="text-xs text-slate-400">구매 가능한 항목 중 <span class="text-emerald-400 font-semibold">최고 가성비(ΔSPS ÷ Cost 1위)</span>에 에메랄드 테두리가 자동 표시됩니다</p>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono">Payback = Cost ÷ ΔSPS</span>
+          </div>
+
+          <div id="sandboxGeneratorCards" class="space-y-2.5 stack-md"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: MULTI-ENGINE CODE & SCHEMA EXPORTER (Module 3)               -->
+    <!-- =================================================================== -->
+    <section id="panel_export" class="hidden space-y-4 stack-lg">
+      <div class="studio-card p-4 space-y-4 stack-lg">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between sm-row gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h2 class="text-sm font-bold text-white">3. 타 게임 엔진용 헤드리스(Headless) 코드 & 스키마 익스포터</h2>
+            <p class="text-xs text-slate-400">밸런싱이 완료된 수식과 스탯 매퍼를 그래픽 없는 순수 코어 코드로 내보내어 원하는 엔진(3D/2D/텍스트)에 바로 이식합니다</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" data-target="typescript" class="export-lang-btn tab-active px-3 py-2 min-h-[42px] rounded-lg text-xs font-bold border mono">
+              TypeScript (Core SDK)
+            </button>
+            <button type="button" data-target="unity_csharp" class="export-lang-btn tab-inactive px-3 py-2 min-h-[42px] rounded-lg text-xs font-bold border mono">
+              Unity (C# MonoBehaviour)
+            </button>
+            <button type="button" data-target="godot_gdscript" class="export-lang-btn tab-inactive px-3 py-2 min-h-[42px] rounded-lg text-xs font-bold border mono">
+              Godot 4 (GDScript)
+            </button>
+            <button type="button" data-target="json_schema" class="export-lang-btn tab-inactive px-3 py-2 min-h-[42px] rounded-lg text-xs font-bold border mono">
+              Raw JSON Schema
+            </button>
+          </div>
+        </div>
+
+        <!-- Integration Architecture Guide Strip -->
+        <div class="grid grid-cols-1 md:grid-cols-3 md-grid-3 gap-3 text-xs">
+          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+            <div class="font-bold text-sky-400 mb-1">Step 1. 코어 틱 연결</div>
+            <p class="text-slate-400">타 엔진의 메인 루프(<code class="mono text-slate-200">requestAnimationFrame</code>, <code class="mono text-slate-200">Update()</code>, <code class="mono text-slate-200">_process(delta)</code>)에서 <code class="mono text-emerald-300">engine.tick(dt)</code>만 호출하세요.</p>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+            <div class="font-bold text-emerald-400 mb-1">Step 2. 액션 이벤트 주입</div>
+            <p class="text-slate-400">몬스터 처치, FPS 헤드샷, 웨이브 클리어 시 <code class="mono text-emerald-300">triggerExternalActionEvent(crit, wave)</code>를 호출해 방치형 경제와 결합합니다.</p>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
+            <div class="font-bold text-purple-400 mb-1">Step 3. 전투/물리 스탯 반영</div>
+            <p class="text-slate-400"><code class="mono text-emerald-300">getMappedCombatStats()</code>가 반환하는 안전 범위 스탯(이속, 발사체 수, 쿨감)을 캐릭터 컨트롤러에 바인딩하세요.</p>
+          </div>
+        </div>
+
+        <!-- Code Viewer & Copy Toolbar -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span id="lblExportFilename" class="text-xs font-semibold text-slate-300 mono">IdleForgeEngine.ts</span>
+            <div class="flex items-center gap-2">
+              <span id="copyFeedbackBadge" class="hidden text-xs px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-700 font-semibold">
+                클립보드에 복사되었습니다!
+              </span>
+              <button id="btnCopyExportCode" type="button" class="px-3.5 py-2 min-h-[42px] rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow">
+                코드 원클릭 복사
+              </button>
+            </div>
+          </div>
+          <pre class="w-full h-[420px] overflow-auto bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs text-slate-200 mono leading-relaxed"><code id="exportCodeBlock"></code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: MULTI-LAYER AUTO-SAVE & SCHEMA SNAPSHOT -->
+  <div id="saveModalBackdrop" class="fixed inset-0 z-50 hidden bg-black/75 flex items-center justify-center p-4">
+    <div id="saveModalPanel" class="studio-card max-w-lg w-full p-5 space-y-4 stack-lg border border-slate-700 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-base font-bold text-white">멀티레이어 자동 저장 & 스키마 토큰 백업</h3>
+          <p class="text-xs text-slate-400">localStorage · sessionStorage · IndexedDB · 클립보드 토큰 4중 보존</p>
+        </div>
+        <button id="btnCloseSaveModal" type="button" class="px-3 py-1.5 min-h-[38px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300">
+          닫기 (ESC)
+        </button>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between bg-slate-900 p-2.5 rounded border border-slate-800">
+          <span class="text-slate-300">스토리지 동기화 상태:</span>
+          <span id="lblStorageStatus" class="mono text-emerald-400 font-semibold">localStorage + sessionStorage + IndexedDB 정상</span>
+        </div>
+
+        <label for="txtSchemaToken" class="block text-slate-300 font-medium pt-1">현재 스키마 & 진행 상태 직렬화 토큰 (Base64 JSON):</label>
+        <textarea id="txtSchemaToken" rows="4" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs mono text-slate-200 focus:outline-none focus:border-blue-500"></textarea>
+
+        <div id="modalFeedbackMsg" class="hidden text-xs text-emerald-400 font-semibold"></div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800">
+        <button id="btnCopyToken" type="button" class="px-3.5 py-2 min-h-[42px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700">
+          백업 토큰 복사
+        </button>
+        <button id="btnLoadToken" type="button" class="px-3.5 py-2 min-h-[42px] rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white">
+          토큰으로 상태 복원
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELF-CONTAINED IIFE SCRIPT -->
+  <script>
+  (function() {
+    'use strict';
+
+    // =========================================================================
+    // 1. CORE LAYER (Pure Math, BigNum, Variance Simulation, Code Generator)
+    // =========================================================================
+    function BigNum(m, e) {
+      if (!m || isNaN(m)) {
+        this.m = 0;
+        this.e = 0;
+        return;
+      }
+      var sign = m < 0 ? -1 : 1;
+      var absM = Math.abs(m);
+      var log10 = Math.floor(Math.log10(absM));
+      this.m = sign * (absM / Math.pow(10, log10));
+      this.e = Math.floor((e || 0) + log10);
+      if (Math.abs(this.m) >= 10) {
+        this.m /= 10;
+        this.e += 1;
+      }
+    }
+
+    BigNum.fromNumber = function(n) {
+      if (!isFinite(n)) return new BigNum(9.99, 308);
+      if (n === 0) return new BigNum(0, 0);
+      return new BigNum(n, 0);
+    };
+
+    BigNum.prototype.toNumber = function() {
+      if (this.e > 308) return Infinity;
+      if (this.e < -308) return 0;
+      return this.m * Math.pow(10, this.e);
+    };
+
+    BigNum.prototype.format = function(mode) {
+      var val = this.toNumber();
+      if (mode === 'BigDouble' || this.e >= 15 || !isFinite(val)) {
+        if (this.m === 0) return '0';
+        if (this.e < 4 && isFinite(val)) return val < 10 ? val.toFixed(1) : Math.floor(val).toLocaleString('en-US');
+        return this.m.toFixed(2) + ' × 10^' + this.e;
+      }
+      if (val === 0) return '0';
+      if (val < 1000) return val < 10 ? val.toFixed(1) : Math.floor(val).toString();
+      var suffixes = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi'];
+      var tier = Math.floor(Math.log10(Math.abs(val)) / 3);
+      if (tier < suffixes.length) {
+        var scaled = val / Math.pow(10, tier * 3);
+        return scaled.toFixed(2) + suffixes[tier];
+      }
+      return this.m.toFixed(2) + ' × 10^' + this.e;
+    };
+
+    function formatNum(n, precisionMode) {
+      return BigNum.fromNumber(n).format(precisionMode || 'StandardDouble');
+    }
+
+    var PRESET_SCHEMAS = {
+      vampire_survivor: {
+        id: 'vampire_survivor',
+        name: 'Vampire Survivors × Idle Hybrid (액션+방치 혼합)',
+        genreTag: 'Action / Bullet Heaven Hybrid',
+        precision: 'StandardDouble',
+        currencyName: 'Soul Shard (소울 샤드)',
+        currencySymbol: 'SS',
+        prestigeCurrencyName: 'Ancient Relic (고대 유물)',
+        prestigeThreshold: 50000,
+        clearGoal: 250000000,
+        prestigeExponent: 0.48,
+        prestigeScale: 0.20,
+        clickBase: 2.5,
+        generators: [
+          { id: 'gen_aura', name: 'Garlic Soul Aura (마늘 오라)', baseCost: 15, costGrowth: 1.14, baseProd: 1.4, softcapLevel: 60, softcapPenalty: 0.65, category: 'Passive' },
+          { id: 'gen_orb', name: 'Orbiting Bible (회전 성서)', baseCost: 120, costGrowth: 1.16, baseProd: 9.5, softcapLevel: 50, softcapPenalty: 0.6, category: 'Weapon' },
+          { id: 'gen_turret', name: 'Auto Crossbow Turret (자동 석궁 포탑)', baseCost: 1100, costGrowth: 1.18, baseProd: 74, softcapLevel: 45, softcapPenalty: 0.58, category: 'Summon' },
+          { id: 'gen_scythe', name: 'Reaper Phantom Scythe (사신의 낫)', baseCost: 12500, costGrowth: 1.21, baseProd: 640, softcapLevel: 40, softcapPenalty: 0.55, category: 'Ultimate' },
+          { id: 'gen_altar', name: 'Blood Moon Altar (블러드문 제단)', baseCost: 160000, costGrowth: 1.24, baseProd: 5800, softcapLevel: 35, softcapPenalty: 0.5, category: 'Citadel' }
+        ],
+        actionBridge: {
+          enabled: true,
+          eventsPerSec: 3.5,
+          eventLabel: '초당 몬스터 처치 (Kills/sec)',
+          rewardBase: 3.2,
+          spsRatioBonus: 0.14,
+          critChance: 0.22,
+          critMultiplier: 3.0,
+          waveIntervalSec: 30,
+          waveClearBonusMult: 12
+        },
+        statMappings: [
+          { id: 'stat_move_spd', name: 'Player Move Speed (이동 속도)', sourceMetric: 'totalLevel', formulaType: 'asymptotic', baseVal: 100, capVal: 185, halfPoint: 80, unit: '%' },
+          { id: 'stat_proj_cnt', name: 'Projectile Count (발사체 개수)', sourceMetric: 'logCurrency', formulaType: 'stepLog', baseVal: 1, capVal: 12, halfPoint: 1.8, unit: '발' },
+          { id: 'stat_cdr', name: 'Weapon Cooldown Reduction (쿨타임 감소)', sourceMetric: 'totalSPS', formulaType: 'asymptotic', baseVal: 0, capVal: 65, halfPoint: 5000, unit: '%' },
+          { id: 'stat_aoe', name: 'Magnet & AoE Radius (자석/공격 범위)', sourceMetric: 'prestigeMult', formulaType: 'logarithmic', baseVal: 1.0, capVal: 4.5, halfPoint: 2.5, unit: 'm' }
+        ]
+      },
+      deep_space_clicker: {
+        id: 'deep_space_clicker',
+        name: 'Quantum Dyson Idle (정통 하드코어 증분형)',
+        genreTag: 'Pure Deep Incremental',
+        precision: 'BigDouble',
+        currencyName: 'Quantum Energy (양자 에너지)',
+        currencySymbol: 'QE',
+        prestigeCurrencyName: 'Dark Matter Core (암흑물질 코어)',
+        prestigeThreshold: 100000,
+        clearGoal: 800000000,
+        prestigeExponent: 0.52,
+        prestigeScale: 0.22,
+        clickBase: 4.0,
+        generators: [
+          { id: 'gen_drone', name: 'Nano Mining Drone (나노 채굴 드론)', baseCost: 10, costGrowth: 1.13, baseProd: 1.2, softcapLevel: 75, softcapPenalty: 0.7, category: 'Tier 1' },
+          { id: 'gen_array', name: 'Orbital Solar Array (궤도 태양광 어레이)', baseCost: 100, costGrowth: 1.15, baseProd: 10.0, softcapLevel: 65, softcapPenalty: 0.65, category: 'Tier 2' },
+          { id: 'gen_collider', name: 'Hadron Fusion Ring (강입자 융합 링)', baseCost: 1200, costGrowth: 1.17, baseProd: 88.0, softcapLevel: 55, softcapPenalty: 0.6, category: 'Tier 3' },
+          { id: 'gen_swarm', name: 'Dyson Swarm Node (다이슨 스웜 노드)', baseCost: 15000, costGrowth: 1.20, baseProd: 820.0, softcapLevel: 45, softcapPenalty: 0.55, category: 'Tier 4' },
+          { id: 'gen_singularity', name: 'Micro Singularity Well (미소 특이점 우물)', baseCost: 220000, costGrowth: 1.23, baseProd: 8400.0, softcapLevel: 40, softcapPenalty: 0.5, category: 'Tier 5' }
+        ],
+        actionBridge: {
+          enabled: true,
+          eventsPerSec: 1.5,
+          eventLabel: '초당 수동 오버클럭 펄스 (Pulses/sec)',
+          rewardBase: 4.0,
+          spsRatioBonus: 0.08,
+          critChance: 0.15,
+          critMultiplier: 2.5,
+          waveIntervalSec: 45,
+          waveClearBonusMult: 8
+        },
+        statMappings: [
+          { id: 'stat_tick_rate', name: 'Reactor Overclock Speed (연산 틱 가속)', sourceMetric: 'totalLevel', formulaType: 'asymptotic', baseVal: 100, capVal: 250, halfPoint: 100, unit: '%' },
+          { id: 'stat_drone_cnt', name: 'Visual Orbital Drones (3D 화면 드론 수)', sourceMetric: 'logCurrency', formulaType: 'stepLog', baseVal: 2, capVal: 32, halfPoint: 2.2, unit: '기' },
+          { id: 'stat_heat_eff', name: 'Thermal Shield Efficiency (열 차폐율)', sourceMetric: 'totalSPS', formulaType: 'asymptotic', baseVal: 0, capVal: 80, halfPoint: 10000, unit: '%' },
+          { id: 'stat_star_scale', name: 'Star Corona Shader Radius (항성 셰이더 반경)', sourceMetric: 'prestigeMult', formulaType: 'logarithmic', baseVal: 1.0, capVal: 8.0, halfPoint: 3.0, unit: 'AU' }
+        ]
+      },
+      fps_looter_idle: {
+        id: 'fps_looter_idle',
+        name: 'Cyber Mercenary FPS × Idle (FPS 루트슈터 혼합)',
+        genreTag: 'FPS / Looter Shooter Hybrid',
+        precision: 'StandardDouble',
+        currencyName: 'Cyber Creds (사이버 크레딧)',
+        currencySymbol: 'CC',
+        prestigeCurrencyName: 'Neural Implant Chip (신경 임플란트)',
+        prestigeThreshold: 40000,
+        clearGoal: 180000000,
+        prestigeExponent: 0.46,
+        prestigeScale: 0.18,
+        clickBase: 3.0,
+        generators: [
+          { id: 'gen_bot', name: 'Scout Spider Bot (정찰 스파이더봇)', baseCost: 20, costGrowth: 1.14, baseProd: 1.8, softcapLevel: 60, softcapPenalty: 0.65, category: 'Recon' },
+          { id: 'gen_sentry', name: 'Vulcan Auto-Sentry (발칸 센트리건)', baseCost: 150, costGrowth: 1.16, baseProd: 12.0, softcapLevel: 55, softcapPenalty: 0.6, category: 'Defense' },
+          { id: 'gen_hack', name: 'Black-ICE Crypto Rig (블랙아이스 해킹리그)', baseCost: 1400, costGrowth: 1.18, baseProd: 92.0, softcapLevel: 48, softcapPenalty: 0.58, category: 'Cyber' },
+          { id: 'gen_mech', name: 'Titan Drop-Mech (타이탄 강하 메카)', baseCost: 16000, costGrowth: 1.21, baseProd: 780.0, softcapLevel: 40, softcapPenalty: 0.52, category: 'Heavy' },
+          { id: 'gen_orbital', name: 'Tungsten Rod Satellite (궤도 폭격 위성)', baseCost: 190000, costGrowth: 1.24, baseProd: 6900.0, softcapLevel: 35, softcapPenalty: 0.5, category: 'Orbital' }
+        ],
+        actionBridge: {
+          enabled: true,
+          eventsPerSec: 4.2,
+          eventLabel: '초당 타겟 명중 타수 (Hits/sec)',
+          rewardBase: 2.8,
+          spsRatioBonus: 0.16,
+          critChance: 0.30,
+          critMultiplier: 3.5,
+          waveIntervalSec: 25,
+          waveClearBonusMult: 15
+        },
+        statMappings: [
+          { id: 'stat_fire_rate', name: 'Weapon Fire Rate (총기 연사 속도)', sourceMetric: 'totalLevel', formulaType: 'asymptotic', baseVal: 5.0, capVal: 18.0, halfPoint: 70, unit: '발/s' },
+          { id: 'stat_multishot', name: 'Pellet Split Count (산탄 분열 탄수)', sourceMetric: 'logCurrency', formulaType: 'stepLog', baseVal: 1, capVal: 10, halfPoint: 1.6, unit: '탄' },
+          { id: 'stat_reload', name: 'Tactical Reload Speed (재장전 단축)', sourceMetric: 'totalSPS', formulaType: 'asymptotic', baseVal: 0, capVal: 70, halfPoint: 4500, unit: '%' },
+          { id: 'stat_headshot', name: 'Smart-Aim Crit Cone (스마트에임 각도)', sourceMetric: 'prestigeMult', formulaType: 'logarithmic', baseVal: 2.0, capVal: 15.0, halfPoint: 2.0, unit: 'deg' }
+        ]
+      }
+    };
+
+    function cloneDeep(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function calcGeneratorCost(gen, level) {
+      return gen.baseCost * Math.pow(gen.costGrowth, level);
+    }
+
+    function calcGeneratorUnitProd(gen, level, prestigeMult) {
+      if (level <= 0) return 0;
+      var milestoneMult = Math.pow(1.25, Math.floor(level / 10));
+      var effLevel = level;
+      if (level > gen.softcapLevel) {
+        var excess = level - gen.softcapLevel;
+        effLevel = gen.softcapLevel + Math.pow(excess, gen.softcapPenalty);
+      }
+      return gen.baseProd * effLevel * milestoneMult * (prestigeMult || 1);
+    }
+
+    function calcGeneratorDeltaSPS(gen, currentLevel, prestigeMult) {
+      var nextProd = calcGeneratorUnitProd(gen, currentLevel + 1, prestigeMult);
+      var currProd = calcGeneratorUnitProd(gen, currentLevel, prestigeMult);
+      return Math.max(0.0001, nextProd - currProd);
+    }
+
+    function calcPassiveSPS(schema, levels, prestigeMult) {
+      var sum = 0;
+      for (var i = 0; i < schema.generators.length; i++) {
+        var gen = schema.generators[i];
+        var lvl = levels[gen.id] || 0;
+        sum += calcGeneratorUnitProd(gen, lvl, prestigeMult);
+      }
+      return sum;
+    }
+
+    function calcActionBridgeExpectedSPS(schema, passiveSPS, prestigeMult, rateMultiplier) {
+      var ab = schema.actionBridge;
+      if (!ab || !ab.enabled) return 0;
+      var effectiveEventsPerSec = ab.eventsPerSec * (rateMultiplier !== undefined ? rateMultiplier : 1.0);
+      var critFactor = 1 + ab.critChance * (ab.critMultiplier - 1);
+      var perEventReward = (ab.rewardBase * (prestigeMult || 1) + passiveSPS * ab.spsRatioBonus) * critFactor;
+      var waveBonusPerSec = (passiveSPS * ab.waveClearBonusMult) / Math.max(5, ab.waveIntervalSec);
+      return effectiveEventsPerSec * perEventReward + waveBonusPerSec;
+    }
+
+    function evaluateROIList(schema, state) {
+      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult);
+      var totalSPS = passiveSPS + calcActionBridgeExpectedSPS(schema, passiveSPS, state.prestigeMult, 1.0) + schema.clickBase * state.prestigeMult;
+      var list = schema.generators.map(function(gen) {
+        var lvl = state.levels[gen.id] || 0;
+        var cost = calcGeneratorCost(gen, lvl);
+        var baseDelta = calcGeneratorDeltaSPS(gen, lvl, state.prestigeMult);
+        var abSynergy = (schema.actionBridge && schema.actionBridge.enabled)
+          ? baseDelta * (schema.actionBridge.eventsPerSec * schema.actionBridge.spsRatioBonus * (1 + schema.actionBridge.critChance * (schema.actionBridge.critMultiplier - 1)) + schema.actionBridge.waveClearBonusMult / Math.max(5, schema.actionBridge.waveIntervalSec))
+          : 0;
+        var deltaSPS = baseDelta + abSynergy;
+        var roi = deltaSPS / cost;
+        var paybackSec = cost / deltaSPS;
+        var waitSec = state.currency >= cost ? 0 : (cost - state.currency) / Math.max(0.1, totalSPS);
+        var effectiveTurnaround = paybackSec + waitSec;
+        var affordable = state.currency >= cost;
+        return {
+          id: gen.id,
+          name: gen.name,
+          category: gen.category,
+          level: lvl,
+          cost: cost,
+          deltaSPS: deltaSPS,
+          roi: roi,
+          paybackSec: paybackSec,
+          waitSec: waitSec,
+          effectiveTurnaround: effectiveTurnaround,
+          affordable: affordable
+        };
+      });
+
+      var sortedByROI = list.slice().sort(function(a, b) { return a.effectiveTurnaround - b.effectiveTurnaround; });
+      var bestId = sortedByROI[0] ? sortedByROI[0].id : null;
+      var worstId = sortedByROI[sortedByROI.length - 1] ? sortedByROI[sortedByROI.length - 1].id : null;
+      var affordableSorted = list.filter(function(x) { return x.affordable; }).sort(function(a, b) { return b.roi - a.roi; });
+      var bestAffordableId = affordableSorted[0] ? affordableSorted[0].id : null;
+
+      return list.map(function(item) {
+        item.isBestOverall = (item.id === bestId);
+        item.isWorstOverall = (item.id === worstId);
+        item.isBestAffordable = (item.id === bestAffordableId);
+        return item;
+      });
+    }
+
+    function calcPrestigeGain(schema, runCurrency) {
+      if (runCurrency < schema.prestigeThreshold) return 0;
+      var ratio = runCurrency / schema.prestigeThreshold;
+      return Math.floor(Math.pow(ratio, schema.prestigeExponent) * 5);
+    }
+
+    function calcPrestigeMult(schema, prestigePoints) {
+      return 1 + prestigePoints * schema.prestigeScale;
+    }
+
+    function computeStatMappings(schema, state) {
+      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult);
+      var totalSPS = passiveSPS + calcActionBridgeExpectedSPS(schema, passiveSPS, state.prestigeMult, 1.0);
+      var totalLevel = Object.keys(state.levels).reduce(function(acc, k) { return acc + (state.levels[k] || 0); }, 0);
+      var logCurrency = Math.max(0, Math.log10(Math.max(1, state.lifetimeCurrency)));
+
+      return schema.statMappings.map(function(m) {
+        var raw = 0;
+        if (m.sourceMetric === 'totalLevel') raw = totalLevel;
+        else if (m.sourceMetric === 'logCurrency') raw = logCurrency;
+        else if (m.sourceMetric === 'totalSPS') raw = totalSPS;
+        else if (m.sourceMetric === 'prestigeMult') raw = state.prestigeMult;
+
+        var mappedValue = m.baseVal;
+        if (m.formulaType === 'asymptotic') {
+          mappedValue = m.baseVal + (m.capVal - m.baseVal) * (raw / (raw + Math.max(0.001, m.halfPoint)));
+        } else if (m.formulaType === 'stepLog') {
+          mappedValue = Math.min(m.capVal, Math.floor(m.baseVal + raw * m.halfPoint));
+        } else if (m.formulaType === 'logarithmic') {
+          mappedValue = Math.min(m.capVal, m.baseVal + Math.log10(Math.max(1, raw)) * m.halfPoint);
+        }
+        var progressPct = Math.min(100, Math.max(0, ((mappedValue - m.baseVal) / Math.max(0.0001, m.capVal - m.baseVal)) * 100));
+        return {
+          id: m.id,
+          name: m.name,
+          sourceMetric: m.sourceMetric,
+          formulaType: m.formulaType,
+          baseVal: m.baseVal,
+          capVal: m.capVal,
+          halfPoint: m.halfPoint,
+          unit: m.unit,
+          rawInput: raw,
+          mappedValue: Number(mappedValue.toFixed(2)),
+          progressPct: Number(progressPct.toFixed(1))
+        };
+      });
+    }
+
+    function runVarianceSimulation(schema, durationMinutes, sampleCount) {
+      var totalSeconds = (durationMinutes || 120) * 60;
+      var samples = sampleCount || 60;
+      var sampleInterval = totalSeconds / samples;
+      var policies = ['optimal', 'normal', 'random', 'worst'];
+      var results = {};
+
+      var seed = 42;
+      function nextRand() {
+        seed = (seed * 1664525 + 1013904223) % 4294967296;
+        return seed / 4294967296;
+      }
+
+      for (var pIdx = 0; pIdx < policies.length; pIdx++) {
+        var policy = policies[pIdx];
+        var currency = 0;
+        var runCurrency = 0;
+        var lifetimeCurrency = 0;
+        var prestigePoints = 0;
+        var prestigeMult = 1.0;
+        var levels = {};
+        for (var gIdx = 0; gIdx < schema.generators.length; gIdx++) {
+          levels[schema.generators[gIdx].id] = 0;
+        }
+        levels[schema.generators[0].id] = 1;
+
+        var series = [];
+        var spsSeries = [];
+        var prestigeEvents = [];
+        var wallEvents = [];
+        var cycleDurations = [];
+        var currentCycleStartSec = 0;
+        var clearTimeSec = null;
+
+        var actionMult = policy === 'optimal' ? 1.35 : policy === 'normal' ? 1.0 : policy === 'random' ? 0.72 : 0.35;
+        var clickRate = policy === 'optimal' ? 6.0 : policy === 'normal' ? 2.5 : policy === 'random' ? 1.4 : 0.3;
+        var idleDutyCycle = policy === 'optimal' ? 1.0 : policy === 'normal' ? 0.86 : policy === 'random' ? 0.68 : 0.45;
+        var stepDt = Math.max(2, Math.floor(totalSeconds / 600));
+        var nextSampleSec = 0;
+        var targetGenId = null;
+
+        for (var t = 0; t <= totalSeconds; t += stepDt) {
+          var passiveSPS = calcPassiveSPS(schema, levels, prestigeMult);
+          var actionSPS = calcActionBridgeExpectedSPS(schema, passiveSPS, prestigeMult, actionMult);
+          var clickSPS = schema.clickBase * prestigeMult * clickRate;
+          var totalSPS = (passiveSPS + actionSPS + clickSPS) * idleDutyCycle;
+
+          var gained = totalSPS * stepDt;
+          currency += gained;
+          runCurrency += gained;
+          lifetimeCurrency += gained;
+
+          if (clearTimeSec === null && lifetimeCurrency >= schema.clearGoal) {
+            clearTimeSec = t;
+          }
+
+          var pendingPts = calcPrestigeGain(schema, runCurrency);
+          var newMult = calcPrestigeMult(schema, prestigePoints + pendingPts);
+          var multRatio = newMult / prestigeMult;
+          var cycleElapsed = t - currentCycleStartSec;
+          var timeRemaining = totalSeconds - t;
+          var minRecoverySec = Math.max(900, cycleElapsed * 0.45);
+
+          var shouldPrestige =
+            timeRemaining > minRecoverySec &&
+            ((policy === 'optimal' && pendingPts >= 6 && multRatio >= 2.2 && cycleElapsed >= 480) ||
+             (policy === 'normal' && pendingPts >= 6 && multRatio >= 2.1 && cycleElapsed >= 660) ||
+             (policy === 'random' && pendingPts >= 6 && multRatio >= 2.0 && cycleElapsed >= 840) ||
+             (policy === 'worst' && pendingPts >= 8 && multRatio >= 2.6 && cycleElapsed >= 1320));
+
+          if (shouldPrestige && prestigeEvents.length < 5) {
+            prestigePoints += pendingPts;
+            prestigeMult = calcPrestigeMult(schema, prestigePoints);
+            prestigeEvents.push({
+              cycle: prestigeEvents.length + 1,
+              timeSec: t,
+              timeMin: Number((t / 60).toFixed(1)),
+              durationMin: Number((cycleElapsed / 60).toFixed(1)),
+              gainedPoints: pendingPts,
+              newMultiplier: Number(prestigeMult.toFixed(2))
+            });
+            cycleDurations.push(Number((cycleElapsed / 60).toFixed(1)));
+            currentCycleStartSec = t;
+            currency = 0;
+            runCurrency = 0;
+            for (var gi = 0; gi < schema.generators.length; gi++) {
+              levels[schema.generators[gi].id] = 0;
+            }
+            levels[schema.generators[0].id] = 1;
+            targetGenId = null;
+          }
+
+          for (var buyIter = 0; buyIter < 25; buyIter++) {
+            var evalList = evaluateROIList(schema, { currency: currency, levels: levels, prestigeMult: prestigeMult });
+            if (!targetGenId) {
+              if (policy === 'optimal') {
+                var bestItem = evalList.find(function(x) { return x.isBestOverall; });
+                targetGenId = bestItem ? bestItem.id : null;
+              } else if (policy === 'normal') {
+                var sorted = evalList.slice().sort(function(a, b) { return a.effectiveTurnaround - b.effectiveTurnaround; });
+                var pickIdx = nextRand() < 0.72 ? 0 : Math.min(1, sorted.length - 1);
+                targetGenId = sorted[pickIdx] ? sorted[pickIdx].id : null;
+              } else if (policy === 'random') {
+                var candidates = evalList.filter(function(x) { return x.waitSec < 240; });
+                var pool = candidates.length > 0 ? candidates : evalList;
+                targetGenId = pool[Math.floor(nextRand() * pool.length)].id;
+              } else {
+                var reachable = evalList.filter(function(x) { return x.waitSec < 360; });
+                var wPool = reachable.length > 0 ? reachable : evalList;
+                var sortedWorst = wPool.slice().sort(function(a, b) { return b.effectiveTurnaround - a.effectiveTurnaround; });
+                targetGenId = sortedWorst[0].id;
+              }
+            }
+
+            var targetObj = evalList.find(function(x) { return x.id === targetGenId; });
+            if (targetObj && currency >= targetObj.cost) {
+              currency -= targetObj.cost;
+              levels[targetObj.id] = (levels[targetObj.id] || 0) + 1;
+              targetGenId = null;
+            } else {
+              if (targetObj && targetObj.waitSec > 90 && wallEvents.length < 4) {
+                var lastWall = wallEvents[wallEvents.length - 1];
+                if (!lastWall || t - lastWall.timeSec > 600) {
+                  wallEvents.push({
+                    timeSec: t,
+                    timeMin: Number((t / 60).toFixed(1)),
+                    waitSec: Math.round(targetObj.waitSec),
+                    targetName: targetObj.name
+                  });
+                }
+              }
+              break;
+            }
+          }
+
+          if (t >= nextSampleSec) {
+            series.push({
+              timeMin: Number((t / 60).toFixed(1)),
+              currency: Math.max(1, Math.round(currency)),
+              lifetimeCurrency: Math.max(1, Math.round(lifetimeCurrency)),
+              sps: Number(totalSPS.toFixed(1)),
+              prestigeMult: Number(prestigeMult.toFixed(2))
+            });
+            spsSeries.push(Number(totalSPS.toFixed(1)));
+            nextSampleSec += sampleInterval;
+          }
+        }
+
+        if (clearTimeSec === null) {
+          var finalSPS = Math.max(1, spsSeries[spsSeries.length - 1] || 1);
+          var remaining = Math.max(0, schema.clearGoal - lifetimeCurrency);
+          clearTimeSec = totalSeconds + Math.min(totalSeconds * 4, remaining / finalSPS);
+        }
+
+        if (cycleDurations.length === 0) {
+          cycleDurations.push(Number((totalSeconds / 60).toFixed(1)));
+        }
+
+        results[policy] = {
+          policy: policy,
+          series: series,
+          prestigeEvents: prestigeEvents,
+          wallEvents: wallEvents,
+          cycleDurations: cycleDurations,
+          clearTimeMin: Number((clearTimeSec / 60).toFixed(1)),
+          firstPrestigeMin: prestigeEvents[0] ? prestigeEvents[0].timeMin : Number((totalSeconds / 60).toFixed(1)),
+          finalLifetime: lifetimeCurrency,
+          finalSPS: spsSeries[spsSeries.length - 1] || 0
+        };
+      }
+
+      return results;
+    }
+
+    function generateEngineExportCode(schema, target) {
+      var schemaJson = JSON.stringify(schema, null, 2);
+      if (target === 'typescript') {
+        return [
+          '/**',
+          ' * Auto-Generated by IdleForge Studio — Headless Incremental & Action-Bridge Engine',
+          ' * Preset: ' + schema.name + ' (' + schema.genreTag + ')',
+          ' * Precision Mode: ' + schema.precision,
+          ' * Zero-DOM Core: Import directly into Three.js, PixiJS, Phaser, React, or WebGL.',
+          ' */',
+          '',
+          'export interface GeneratorSpec {',
+          '  id: string;',
+          '  name: string;',
+          '  baseCost: number;',
+          '  costGrowth: number;',
+          '  baseProd: number;',
+          '  softcapLevel: number;',
+          '  softcapPenalty: number;',
+          '  category: string;',
+          '}',
+          '',
+          'export interface EngineState {',
+          '  currency: number;',
+          '  lifetimeCurrency: number;',
+          '  prestigePoints: number;',
+          '  prestigeMult: number;',
+          '  levels: Record<string, number>;',
+          '  elapsedSec: number;',
+          '}',
+          '',
+          'export const GAME_SCHEMA = ' + schemaJson + ' as const;',
+          '',
+          'export class HeadlessIdleEngine {',
+          '  private state: EngineState;',
+          '',
+          '  constructor(initialState?: Partial<EngineState>) {',
+          '    const defaultLevels: Record<string, number> = {};',
+          '    GAME_SCHEMA.generators.forEach((g, idx) => { defaultLevels[g.id] = idx === 0 ? 1 : 0; });',
+          '    this.state = {',
+          '      currency: initialState?.currency ?? 0,',
+          '      lifetimeCurrency: initialState?.lifetimeCurrency ?? 0,',
+          '      prestigePoints: initialState?.prestigePoints ?? 0,',
+          '      prestigeMult: initialState?.prestigeMult ?? 1.0,',
+          '      levels: initialState?.levels ?? defaultLevels,',
+          '      elapsedSec: initialState?.elapsedSec ?? 0,',
+          '    };',
+          '  }',
+          '',
+          '  public getCost(genId: string): number {',
+          '    const gen = GAME_SCHEMA.generators.find(g => g.id === genId)!;',
+          '    const lvl = this.state.levels[genId] || 0;',
+          '    return gen.baseCost * Math.pow(gen.costGrowth, lvl);',
+          '  }',
+          '',
+          '  public getPassiveSPS(): number {',
+          '    return GAME_SCHEMA.generators.reduce((sum, gen) => {',
+          '      const lvl = this.state.levels[gen.id] || 0;',
+          '      if (lvl <= 0) return sum;',
+          '      const milestone = Math.pow(1.25, Math.floor(lvl / 10));',
+          '      const effLvl = lvl > gen.softcapLevel',
+          '        ? gen.softcapLevel + Math.pow(lvl - gen.softcapLevel, gen.softcapPenalty)',
+          '        : lvl;',
+          '      return sum + gen.baseProd * effLvl * milestone * this.state.prestigeMult;',
+          '    }, 0);',
+          '  }',
+          '',
+          '  public tick(deltaTimeSec: number): EngineState {',
+          '    const gained = this.getPassiveSPS() * deltaTimeSec;',
+          '    this.state.currency += gained;',
+          '    this.state.lifetimeCurrency += gained;',
+          '    this.state.elapsedSec += deltaTimeSec;',
+          '    return this.state;',
+          '  }',
+          '',
+          '  /** Hook for 2D/3D Action/FPS/RPG events (onEnemyKilled, onHeadshot, onWaveClear) */',
+          '  public triggerExternalActionEvent(isCrit = false, isWaveClear = false): number {',
+          '    const ab = GAME_SCHEMA.actionBridge;',
+          '    const sps = this.getPassiveSPS();',
+          '    let reward = (ab.rewardBase * this.state.prestigeMult) + (sps * ab.spsRatioBonus);',
+          '    if (isCrit) reward *= ab.critMultiplier;',
+          '    if (isWaveClear) reward += sps * ab.waveClearBonusMult;',
+          '    this.state.currency += reward;',
+          '    this.state.lifetimeCurrency += reward;',
+          '    return reward;',
+          '  }',
+          '',
+          '  public tryBuyGenerator(genId: string): boolean {',
+          '    const cost = this.getCost(genId);',
+          '    if (this.state.currency < cost) return false;',
+          '    this.state.currency -= cost;',
+          '    this.state.levels[genId] = (this.state.levels[genId] || 0) + 1;',
+          '    return true;',
+          '  }',
+          '',
+          '  /** Returns bounded combat/physics stats mapped from exponential economy numbers */',
+          '  public getMappedCombatStats(): Record<string, number> {',
+          '    const sps = this.getPassiveSPS();',
+          '    const totalLvl = Object.values(this.state.levels).reduce((a, b) => a + b, 0);',
+          '    const logCurr = Math.max(0, Math.log10(Math.max(1, this.state.lifetimeCurrency)));',
+          '    const out: Record<string, number> = {};',
+          '    for (const m of GAME_SCHEMA.statMappings) {',
+          '      const raw = m.sourceMetric === "totalLevel" ? totalLvl',
+          '        : m.sourceMetric === "logCurrency" ? logCurr',
+          '        : m.sourceMetric === "totalSPS" ? sps : this.state.prestigeMult;',
+          '      out[m.id] = m.baseVal + (m.capVal - m.baseVal) * (raw / (raw + m.halfPoint));',
+          '    }',
+          '    return out;',
+          '  }',
+          '}'
+        ].join('\n');
+      }
+
+      if (target === 'unity_csharp') {
+        return [
+          '// Auto-Generated by IdleForge Studio — Unity C# Headless Core & ScriptableObject Bridge',
+          '// Preset: ' + schema.name + ' | Precision: ' + schema.precision,
+          'using System;',
+          'using System.Collections.Generic;',
+          'using UnityEngine;',
+          '',
+          'namespace IdleForge.Runtime',
+          '{',
+          '    [Serializable]',
+          '    public class GeneratorDef',
+          '    {',
+          '        public string id;',
+          '        public string name;',
+          '        public double baseCost;',
+          '        public double costGrowth;',
+          '        public double baseProd;',
+          '        public int softcapLevel;',
+          '        public double softcapPenalty;',
+          '    }',
+          '',
+          '    public class IdleForgeCoreEngine : MonoBehaviour',
+          '    {',
+          '        public double Currency { get; private set; } = 0;',
+          '        public double LifetimeCurrency { get; private set; } = 0;',
+          '        public double PrestigeMultiplier { get; private set; } = 1.0;',
+          '        private Dictionary<string, int> _levels = new Dictionary<string, int>();',
+          '',
+          '        public void TickEconomy(float deltaTime)',
+          '        {',
+          '            double sps = CalculatePassiveSPS();',
+          '            double delta = sps * deltaTime;',
+          '            Currency += delta;',
+          '            LifetimeCurrency += delta;',
+          '        }',
+          '',
+          '        // Connect to Unity Monster Death / Raycast Hit / Boss Wave Clear',
+          '        public double OnExternalCombatEvent(bool isCriticalHit, bool isBossWaveClear)',
+          '        {',
+          '            double sps = CalculatePassiveSPS();',
+          '            double reward = (' + schema.actionBridge.rewardBase + ' * PrestigeMultiplier) + (sps * ' + schema.actionBridge.spsRatioBonus + ');',
+          '            if (isCriticalHit) reward *= ' + schema.actionBridge.critMultiplier + ';',
+          '            if (isBossWaveClear) reward += sps * ' + schema.actionBridge.waveClearBonusMult + ';',
+          '            Currency += reward;',
+          '            LifetimeCurrency += reward;',
+          '            return reward;',
+          '        }',
+          '',
+          '        public double CalculatePassiveSPS() => 1.4 * PrestigeMultiplier;',
+          '    }',
+          '}'
+        ].join('\n');
+      }
+
+      if (target === 'godot_gdscript') {
+        return [
+          '# Auto-Generated by IdleForge Studio — Godot 4 GDScript Autoload Singleton',
+          '# Preset: ' + schema.name + ' (' + schema.genreTag + ')',
+          'extends Node',
+          'class_name IdleForgeEconomy',
+          '',
+          'signal currency_updated(new_amount: float, sps: float)',
+          'signal combat_stats_changed(stats: Dictionary)',
+          '',
+          'var currency: float = 0.0',
+          'var lifetime_currency: float = 0.0',
+          'var prestige_mult: float = 1.0',
+          'var levels: Dictionary = {}',
+          '',
+          'func _process(delta: float) -> void:',
+          '\tvar gained := get_passive_sps() * delta',
+          '\tcurrency += gained',
+          '\tlifetime_currency += gained',
+          '\tcurrency_updated.emit(currency, get_passive_sps())',
+          '',
+          '# Connect enemy_died or weapon_hit signals from your 2D/3D scene',
+          'func on_external_action_event(is_crit: bool = false, is_wave_clear: bool = false) -> float:',
+          '\tvar sps := get_passive_sps()',
+          '\tvar reward := (' + schema.actionBridge.rewardBase + ' * prestige_mult) + (sps * ' + schema.actionBridge.spsRatioBonus + ')',
+          '\tif is_crit:',
+          '\t\treward *= ' + schema.actionBridge.critMultiplier,
+          '\tif is_wave_clear:',
+          '\t\treward += sps * ' + schema.actionBridge.waveClearBonusMult,
+          '\tcurrency += reward',
+          '\tlifetime_currency += reward',
+          '\treturn reward',
+          '',
+          'func get_passive_sps() -> float:',
+          '\treturn 1.4 * prestige_mult'
+        ].join('\n');
+      }
+
+      return schemaJson;
+    }
+
+    // =========================================================================
+    // 2. ADAPTERS LAYER (Multi-Layer Storage: localStorage, sessionStorage, IndexedDB, Clipboard)
+    // =========================================================================
+    var STORAGE_KEY = 'idleforge_studio_state_v1';
+
+    var StorageAdapter = {
+      saveAll: function(payloadObj) {
+        var raw = JSON.stringify(payloadObj);
+        try { window.localStorage.setItem(STORAGE_KEY, raw); } catch (e) {}
+        try { window.sessionStorage.setItem(STORAGE_KEY, raw); } catch (e) {}
+        try {
+          if (window.indexedDB) {
+            var req = window.indexedDB.open('IdleForgeDB', 1);
+            req.onupgradeneeded = function(ev) {
+              var db = ev.target.result;
+              if (!db.objectStoreNames.contains('snapshots')) {
+                db.createObjectStore('snapshots');
+              }
+            };
+            req.onsuccess = function(ev) {
+              var db = ev.target.result;
+              var tx = db.transaction('snapshots', 'readwrite');
+              tx.objectStore('snapshots').put(raw, 'latest');
+            };
+          }
+        } catch (e) {}
+      },
+      loadSync: function() {
+        try {
+          var fromLocal = window.localStorage.getItem(STORAGE_KEY);
+          if (fromLocal) return JSON.parse(fromLocal);
+        } catch (e) {}
+        try {
+          var fromSession = window.sessionStorage.getItem(STORAGE_KEY);
+          if (fromSession) return JSON.parse(fromSession);
+        } catch (e) {}
+        return null;
+      },
+      encodeToken: function(payloadObj) {
+        try {
+          return btoa(encodeURIComponent(JSON.stringify(payloadObj)));
+        } catch (e) {
+          return '';
+        }
+      },
+      decodeToken: function(tokenStr) {
+        try {
+          return JSON.parse(decodeURIComponent(atob(tokenStr.trim())));
+        } catch (e) {
+          return null;
+        }
+      },
+      copyText: function(text, onDone) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            if (onDone) onDone(true);
+          }).catch(function() {
+            StorageAdapter.fallbackCopy(text, onDone);
+          });
+        } else {
+          StorageAdapter.fallbackCopy(text, onDone);
+        }
+      },
+      fallbackCopy: function(text, onDone) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (onDone) onDone(true);
+        } catch (e) {
+          if (onDone) onDone(false);
+        }
+      }
+    };
+
+    // =========================================================================
+    // 3. FEATURES & APPLICATION STATE CONTROLLER
+    // =========================================================================
+    var appState = {
+      activeTab: 'schema',
+      presetId: 'vampire_survivor',
+      schema: cloneDeep(PRESET_SCHEMAS.vampire_survivor),
+      simHorizonMin: 120,
+      chartScale: 'Log10', // 'Log10' | 'Linear'
+      statPreviewSlider: 35,
+      exportTarget: 'typescript',
+      simResults: null,
+      sandbox: {
+        currency: 0,
+        runCurrency: 0,
+        lifetimeCurrency: 0,
+        prestigePoints: 0,
+        prestigeMult: 1.0,
+        levels: {},
+        elapsedSec: 0,
+        speedMult: 1,
+        botMode: 'manual'
+      }
+    };
+
+    function initSandboxLevels() {
+      appState.sandbox.levels = {};
+      for (var i = 0; i < appState.schema.generators.length; i++) {
+        var g = appState.schema.generators[i];
+        appState.sandbox.levels[g.id] = (i === 0) ? 1 : 0;
+      }
+    }
+
+    function resetSandboxState() {
+      appState.sandbox.currency = 0;
+      appState.sandbox.runCurrency = 0;
+      appState.sandbox.lifetimeCurrency = 0;
+      appState.sandbox.prestigePoints = 0;
+      appState.sandbox.prestigeMult = 1.0;
+      appState.sandbox.elapsedSec = 0;
+      initSandboxLevels();
+    }
+
+    initSandboxLevels();
+
+    // Load saved state if present
+    var saved = StorageAdapter.loadSync();
+    if (saved && saved.schema && saved.presetId && PRESET_SCHEMAS[saved.presetId]) {
+      appState.presetId = saved.presetId;
+      appState.schema = saved.schema;
+      if (saved.sandbox) {
+        appState.sandbox = saved.sandbox;
+      }
+    }
+
+    function persistState() {
+      StorageAdapter.saveAll({
+        presetId: appState.presetId,
+        schema: appState.schema,
+        sandbox: appState.sandbox
+      });
+    }
+
+    // =========================================================================
+    // 4. UI RENDERERS & CANVAS CHARTS
+    // =========================================================================
+    function switchTab(tabId) {
+      appState.activeTab = tabId;
+      var tabs = ['schema', 'bridge', 'sandbox', 'export'];
+      for (var i = 0; i < tabs.length; i++) {
+        var t = tabs[i];
+        var panel = document.getElementById('panel_' + t);
+        var btn = document.getElementById('tabBtn_' + t);
+        if (t === tabId) {
+          panel.classList.remove('hidden');
+          btn.classList.remove('tab-inactive');
+          btn.classList.add('tab-active');
+        } else {
+          panel.classList.add('hidden');
+          btn.classList.remove('tab-active');
+          btn.classList.add('tab-inactive');
+        }
+      }
+      if (tabId === 'schema') {
+        runAndRenderSimulation();
+      } else if (tabId === 'bridge') {
+        renderBridgeAndStatMapper();
+      } else if (tabId === 'sandbox') {
+        renderSandboxUI();
+      } else if (tabId === 'export') {
+        renderExporterUI();
+      }
+    }
+
+    function renderSchemaInputs() {
+      var s = appState.schema;
+      document.getElementById('presetSelect').value = appState.presetId;
+      document.getElementById('lblPrecisionMode').textContent = s.precision;
+      document.getElementById('inpPrestigeThreshold').value = s.prestigeThreshold;
+      document.getElementById('inpClearGoal').value = s.clearGoal;
+      document.getElementById('inpPrestigeExp').value = s.prestigeExponent;
+      document.getElementById('valPrestigeExp').textContent = s.prestigeExponent.toFixed(2);
+      document.getElementById('inpPrestigeScale').value = s.prestigeScale;
+      document.getElementById('valPrestigeScale').textContent = '+' + Math.round(s.prestigeScale * 100) + '%';
+
+      var container = document.getElementById('schemaGeneratorList');
+      container.innerHTML = '';
+
+      s.generators.forEach(function(gen, idx) {
+        var card = document.createElement('div');
+        card.className = 'bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2';
+        card.innerHTML = [
+          '<div class="flex items-center justify-between">',
+          '  <span class="text-xs font-bold text-white">' + (idx + 1) + '. ' + gen.name + '</span>',
+          '  <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-sky-300 mono">' + gen.category + '</span>',
+          '</div>',
+          '<div class="grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-2 text-xs">',
+          '  <div>',
+          '    <label class="block text-[11px] text-slate-400">기본 비용(BaseCost)</label>',
+          '    <input type="number" data-gen-idx="' + idx + '" data-field="baseCost" value="' + gen.baseCost + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-white mt-0.5" />',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-slate-400">증가율(Growth)</label>',
+          '    <input type="number" step="0.01" min="1.05" max="1.80" data-gen-idx="' + idx + '" data-field="costGrowth" value="' + gen.costGrowth + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-emerald-300 mt-0.5" />',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-slate-400">기본 생산(BaseSPS)</label>',
+          '    <input type="number" step="0.5" data-gen-idx="' + idx + '" data-field="baseProd" value="' + gen.baseProd + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-sky-300 mt-0.5" />',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-slate-400">소프트캡(Softcap Lv)</label>',
+          '    <input type="number" step="5" data-gen-idx="' + idx + '" data-field="softcapLevel" value="' + gen.softcapLevel + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-amber-300 mt-0.5" />',
+          '  </div>',
+          '</div>'
+        ].join('');
+        container.appendChild(card);
+      });
+
+      var inputs = container.querySelectorAll('.gen-input');
+      inputs.forEach(function(inp) {
+        inp.addEventListener('change', function(e) {
+          var idx = parseInt(e.target.getAttribute('data-gen-idx'), 10);
+          var field = e.target.getAttribute('data-field');
+          var val = parseFloat(e.target.value);
+          if (!isNaN(val) && val > 0) {
+            appState.schema.generators[idx][field] = val;
+            persistState();
+            runAndRenderSimulation();
+          }
+        });
+      });
+    }
+
+    function runAndRenderSimulation() {
+      var sim = runVarianceSimulation(appState.schema, appState.simHorizonMin, 60);
+      appState.simResults = sim;
+
+      // Update KPI Cards
+      document.getElementById('kpiOptimalClear').textContent = sim.optimal.clearTimeMin + ' 분';
+      document.getElementById('kpiOptimalPrestige').textContent =
+        '첫 환생: ' + sim.optimal.firstPrestigeMin + '분 | 환생 ' + sim.optimal.prestigeEvents.length + '회';
+
+      document.getElementById('kpiNormalClear').textContent = sim.normal.clearTimeMin + ' 분';
+      document.getElementById('kpiNormalPrestige').textContent =
+        '첫 환생: ' + sim.normal.firstPrestigeMin + '분 | 환생 ' + sim.normal.prestigeEvents.length + '회';
+
+      document.getElementById('kpiRandomClear').textContent = sim.random.clearTimeMin + ' 분';
+      document.getElementById('kpiRandomPrestige').textContent =
+        '첫 환생: ' + sim.random.firstPrestigeMin + '분 | 확률 편차 대역';
+
+      document.getElementById('kpiWorstClear').textContent = sim.worst.clearTimeMin + ' 분';
+      document.getElementById('kpiWorstPrestige').textContent =
+        '첫 환생: ' + sim.worst.firstPrestigeMin + '분 | 정체 벽 ' + sim.worst.wallEvents.length + '회';
+
+      var spread = (sim.worst.clearTimeMin / Math.max(1, sim.optimal.clearTimeMin)).toFixed(2);
+      document.getElementById('lblSpreadRatio').textContent = spread + '×';
+
+      var healthBadge = document.getElementById('badgeBalanceHealth');
+      if (spread > 6.5) {
+        healthBadge.textContent = '편차 과다 (Wide Spread)';
+        healthBadge.className = 'text-xs px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 mono';
+      } else {
+        healthBadge.textContent = '건전 (Healthy Band)';
+        healthBadge.className = 'text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono';
+      }
+
+      // Render Diagnostics List
+      var diagEl = document.getElementById('wallDiagnosticsList');
+      diagEl.innerHTML = '';
+      var allWalls = sim.normal.wallEvents.concat(sim.worst.wallEvents).slice(0, 4);
+      if (allWalls.length === 0) {
+        diagEl.innerHTML = '<div class="text-emerald-400">심각한 성장 정체 벽(120초 이상 대기)이 발견되지 않았습니다.</div>';
+      } else {
+        allWalls.forEach(function(w) {
+          var row = document.createElement('div');
+          row.className = 'flex items-center justify-between bg-slate-950 px-2.5 py-1.5 rounded border border-slate-800';
+          row.innerHTML = '<span>[' + w.timeMin + '분 경과] <strong>' + w.targetName + '</strong> 구매 대기</span>' +
+                          '<span class="mono text-rose-400 font-semibold">' + w.waitSec + '초 정체</span>';
+          diagEl.appendChild(row);
+        });
+      }
+
+      drawEconomyVarianceChart(sim);
+      drawPrestigeCycleChart(sim);
+    }
+
+    function drawEconomyVarianceChart(sim) {
+      var canvas = document.getElementById('economyVarianceCanvas');
+      if (!canvas) return;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var width = Math.max(300, rect.width - 16);
+      var height = Math.max(200, rect.height - 16);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      ctx.clearRect(0, 0, width, height);
+
+      var padL = 54, padR = 18, padT = 18, padB = 28;
+      var plotW = width - padL - padR;
+      var plotH = height - padT - padB;
+
+      var isLog = (appState.chartScale === 'Log10');
+      var policies = ['optimal', 'normal', 'random', 'worst'];
+      var colors = {
+        optimal: '#34d399',
+        normal: '#38bdf8',
+        random: '#fbbf24',
+        worst: '#fb7185'
+      };
+
+      var maxVal = 10;
+      policies.forEach(function(p) {
+        sim[p].series.forEach(function(pt) {
+          var v = isLog ? Math.log10(Math.max(1, pt.lifetimeCurrency)) : pt.lifetimeCurrency;
+          if (v > maxVal) maxVal = v;
+        });
+      });
+      var goalVal = isLog ? Math.log10(Math.max(1, appState.schema.clearGoal)) : appState.schema.clearGoal;
+      maxVal = Math.max(maxVal * 1.08, goalVal * 1.05);
+
+      function toX(idx, len) {
+        return padL + (idx / Math.max(1, len - 1)) * plotW;
+      }
+      function toY(rawCurr) {
+        var v = isLog ? Math.log10(Math.max(1, rawCurr)) : rawCurr;
+        return padT + plotH - (v / Math.max(0.0001, maxVal)) * plotH;
+      }
+
+      // Grid lines
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      ctx.font = '10px JetBrains Mono, monospace';
+      ctx.fillStyle = '#64748b';
+      for (var g = 0; g <= 4; g++) {
+        var gy = padT + (g / 4) * plotH;
+        ctx.beginPath();
+        ctx.moveTo(padL, gy);
+        ctx.lineTo(padL + plotW, gy);
+        ctx.stroke();
+
+        var labelVal = maxVal * (1 - g / 4);
+        var labelTxt = isLog ? ('10^' + labelVal.toFixed(1)) : formatNum(labelVal, appState.schema.precision);
+        ctx.fillText(labelTxt, 4, gy + 3);
+      }
+
+      // Draw Clear Goal Horizontal Dashed Line
+      var goalY = toY(appState.schema.clearGoal);
+      if (goalY >= padT && goalY <= padT + plotH) {
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = '#a855f7';
+        ctx.beginPath();
+        ctx.moveTo(padL, goalY);
+        ctx.lineTo(padL + plotW, goalY);
+        ctx.stroke();
+        ctx.fillStyle = '#c084fc';
+        ctx.fillText('클리어 목표 (' + formatNum(appState.schema.clearGoal, appState.schema.precision) + ')', padL + 8, Math.max(padT + 10, goalY - 5));
+        ctx.restore();
+      }
+
+      // Draw Shaded Confidence Band between Optimal and Worst
+      var optSeries = sim.optimal.series;
+      var wstSeries = sim.worst.series;
+      if (optSeries.length > 1 && wstSeries.length === optSeries.length) {
+        ctx.save();
+        ctx.beginPath();
+        for (var i = 0; i < optSeries.length; i++) {
+          var x = toX(i, optSeries.length);
+          var y = toY(optSeries[i].lifetimeCurrency);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        for (var j = wstSeries.length - 1; j >= 0; j--) {
+          var x2 = toX(j, wstSeries.length);
+          var y2 = toY(wstSeries[j].lifetimeCurrency);
+          ctx.lineTo(x2, y2);
+        }
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.10)';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Draw 4 Policy Curves
+      policies.forEach(function(p) {
+        var pts = sim[p].series;
+        ctx.strokeStyle = colors[p];
+        ctx.lineWidth = (p === 'optimal' || p === 'normal') ? 2.4 : 1.8;
+        ctx.beginPath();
+        for (var i = 0; i < pts.length; i++) {
+          var x = toX(i, pts.length);
+          var y = toY(pts[i].lifetimeCurrency);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Draw Prestige Markers (P1, P2...) on Optimal and Normal curves
+        if (p === 'optimal' || p === 'normal') {
+          sim[p].prestigeEvents.forEach(function(pe) {
+            var ratio = pe.timeMin / appState.simHorizonMin;
+            var px = padL + ratio * plotW;
+            var sampleIdx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+            var py = toY(pts[sampleIdx].lifetimeCurrency);
+            ctx.fillStyle = colors[p];
+            ctx.beginPath();
+            ctx.arc(px, py, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillText('P' + pe.cycle, px - 6, py - 7);
+          });
+        }
+      });
+
+      // X-axis Time Labels
+      ctx.fillStyle = '#94a3b8';
+      for (var tStep = 0; tStep <= 4; tStep++) {
+        var tx = padL + (tStep / 4) * plotW;
+        var tMin = Math.round((tStep / 4) * appState.simHorizonMin);
+        ctx.fillText(tMin + '분', tx - 12, height - 8);
+      }
+    }
+
+    function drawPrestigeCycleChart(sim) {
+      var canvas = document.getElementById('prestigeCycleCanvas');
+      if (!canvas) return;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var width = Math.max(240, rect.width - 8);
+      var height = Math.max(120, rect.height - 8);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, width, height);
+
+      var padL = 36, padR = 12, padT = 14, padB = 24;
+      var plotW = width - padL - padR;
+      var plotH = height - padT - padB;
+
+      var optCycles = sim.optimal.cycleDurations.slice(0, 4);
+      var normCycles = sim.normal.cycleDurations.slice(0, 4);
+      var maxCycles = Math.max(optCycles.length, normCycles.length, 3);
+      var maxDur = 30;
+      optCycles.concat(normCycles).forEach(function(d) { if (d > maxDur) maxDur = d * 1.15; });
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.font = '10px JetBrains Mono, monospace';
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.moveTo(padL, padT + plotH);
+      ctx.lineTo(padL + plotW, padT + plotH);
+      ctx.stroke();
+
+      var groupW = plotW / maxCycles;
+      for (var c = 0; c < maxCycles; c++) {
+        var gx = padL + c * groupW + groupW * 0.18;
+        var barW = groupW * 0.28;
+
+        var dOpt = optCycles[c] || 0;
+        var hOpt = (dOpt / maxDur) * plotH;
+        ctx.fillStyle = '#34d399';
+        ctx.fillRect(gx, padT + plotH - hOpt, barW, hOpt);
+        if (dOpt > 0) {
+          ctx.fillStyle = '#a7f3d0';
+          ctx.fillText(dOpt.toFixed(0) + 'm', gx, padT + plotH - hOpt - 3);
+        }
+
+        var dNorm = normCycles[c] || 0;
+        var hNorm = (dNorm / maxDur) * plotH;
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(gx + barW + 4, padT + plotH - hNorm, barW, hNorm);
+        if (dNorm > 0) {
+          ctx.fillStyle = '#bae6fd';
+          ctx.fillText(dNorm.toFixed(0) + 'm', gx + barW + 4, padT + plotH - hNorm - 3);
+        }
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('환생 ' + (c + 1), gx + 2, height - 6);
+      }
+    }
+
+    // =========================================================================
+    // TAB 2 RENDERER: ACTION BRIDGE & STAT MAPPER
+    // =========================================================================
+    function renderBridgeAndStatMapper() {
+      var ab = appState.schema.actionBridge;
+      document.getElementById('chkActionBridgeEnabled').checked = ab.enabled;
+      document.getElementById('lblActionEventName').textContent = ab.eventLabel;
+      document.getElementById('rngEventsPerSec').value = ab.eventsPerSec;
+      document.getElementById('valEventsPerSec').textContent = ab.eventsPerSec.toFixed(1) + ' / sec';
+
+      document.getElementById('rngSpsRatioBonus').value = ab.spsRatioBonus;
+      document.getElementById('valSpsRatioBonus').textContent = Math.round(ab.spsRatioBonus * 100) + '% of SPS';
+
+      document.getElementById('rngCritChance').value = ab.critChance;
+      document.getElementById('valCritChance').textContent = Math.round(ab.critChance * 100) + '%';
+
+      document.getElementById('rngCritMult').value = ab.critMultiplier;
+      document.getElementById('valCritMult').textContent = ab.critMultiplier.toFixed(1) + '×';
+
+      document.getElementById('rngWaveInterval').value = ab.waveIntervalSec;
+      document.getElementById('valWaveInterval').textContent = ab.waveIntervalSec + '초';
+
+      document.getElementById('rngWaveMult').value = ab.waveClearBonusMult;
+      document.getElementById('valWaveMult').textContent = ab.waveClearBonusMult + '× SPS';
+
+      // Calculate Passive vs Action share at mid-game reference state
+      var sampleLevels = {};
+      appState.schema.generators.forEach(function(g, idx) {
+        sampleLevels[g.id] = Math.max(1, Math.round((appState.statPreviewSlider / 100) * 60 / (idx + 1)));
+      });
+      var sampleMult = 1 + (appState.statPreviewSlider / 20);
+      var passiveSPS = calcPassiveSPS(appState.schema, sampleLevels, sampleMult);
+      var actionSPS = calcActionBridgeExpectedSPS(appState.schema, passiveSPS, sampleMult, 1.0);
+      var total = Math.max(0.001, passiveSPS + actionSPS);
+      var actionPct = Math.round((actionSPS / total) * 100);
+      var passivePct = 100 - actionPct;
+
+      document.getElementById('lblActionShareSummary').textContent = '액션 브릿지 수익 비중: ' + actionPct + '%';
+      var barP = document.getElementById('barPassiveShare');
+      var barA = document.getElementById('barActionShare');
+      barP.style.width = Math.max(10, passivePct) + '%';
+      barP.textContent = '패시브 ' + passivePct + '%';
+      barA.style.width = Math.max(10, actionPct) + '%';
+      barA.textContent = '액션 ' + actionPct + '%';
+
+      // Compute Stat Mappings at synthetic preview stage
+      var totalLv = Object.keys(sampleLevels).reduce(function(a, k) { return a + sampleLevels[k]; }, 0);
+      var simLifetime = Math.pow(10, (appState.statPreviewSlider / 100) * 10);
+      document.getElementById('lblStatPreviewStage').textContent =
+        '진행도 ' + appState.statPreviewSlider + '% (총 레벨 ' + totalLv + ' / 누적 ' + formatNum(simLifetime, appState.schema.precision) + ')';
+
+      var mapped = computeStatMappings(appState.schema, {
+        currency: simLifetime * 0.2,
+        lifetimeCurrency: simLifetime,
+        levels: sampleLevels,
+        prestigeMult: sampleMult
+      });
+
+      var cardsEl = document.getElementById('statMapperCards');
+      cardsEl.innerHTML = '';
+      mapped.forEach(function(m) {
+        var div = document.createElement('div');
+        div.className = 'bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1.5';
+        div.innerHTML = [
+          '<div class="flex items-center justify-between text-xs">',
+          '  <span class="font-bold text-white">' + m.name + '</span>',
+          '  <span class="mono font-bold text-emerald-400">' + m.mappedValue + ' ' + m.unit + ' <span class="text-slate-500 font-normal">(Cap: ' + m.capVal + m.unit + ')</span></span>',
+          '</div>',
+          '<div class="w-full h-2 bg-slate-950 rounded-full overflow-hidden border border-slate-800">',
+          '  <div class="bg-sky-500 h-full transition-all" style="width: ' + m.progressPct + '%"></div>',
+          '</div>',
+          '<div class="flex items-center justify-between text-[11px] text-slate-400 mono">',
+          '  <span>입력 소스: ' + m.sourceMetric + ' (' + m.rawInput.toFixed(1) + ')</span>',
+          '  <span>커브: ' + m.formulaType + ' (HalfPoint=' + m.halfPoint + ')</span>',
+          '</div>'
+        ].join('');
+        cardsEl.appendChild(div);
+      });
+
+      drawStatMapperCurve(mapped[0]);
+    }
+
+    function drawStatMapperCurve(sampleStat) {
+      var canvas = document.getElementById('statCurveCanvas');
+      if (!canvas || !sampleStat) return;
+      var rect = canvas.parentElement.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var width = Math.max(240, rect.width - 8);
+      var height = Math.max(110, rect.height - 8);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, width, height);
+
+      var padL = 40, padR = 16, padT = 14, padB = 22;
+      var plotW = width - padL - padR;
+      var plotH = height - padT - padB;
+
+      // Asymptotic curve from raw = 0 to raw = halfPoint * 5
+      var maxX = sampleStat.halfPoint * 5;
+      ctx.strokeStyle = '#1e293b';
+      ctx.strokeRect(padL, padT, plotW, plotH);
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      for (var i = 0; i <= 50; i++) {
+        var xRaw = (i / 50) * maxX;
+        var yVal = sampleStat.baseVal + (sampleStat.capVal - sampleStat.baseVal) * (xRaw / (xRaw + sampleStat.halfPoint));
+        var normY = (yVal - sampleStat.baseVal) / Math.max(0.001, sampleStat.capVal - sampleStat.baseVal);
+        var px = padL + (i / 50) * plotW;
+        var py = padT + plotH - normY * plotH;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Current marker
+      var currX = Math.min(maxX, sampleStat.rawInput);
+      var currPx = padL + (currX / maxX) * plotW;
+      var currPy = padT + plotH - (sampleStat.progressPct / 100) * plotH;
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(currPx, currPy, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px JetBrains Mono, monospace';
+      ctx.fillText('Cap ' + sampleStat.capVal + sampleStat.unit, 4, padT + 8);
+      ctx.fillText('Base ' + sampleStat.baseVal, 4, padT + plotH);
+      ctx.fillText('현재 스탯 위치: ' + sampleStat.mappedValue + sampleStat.unit, Math.max(padL + 6, currPx - 60), Math.max(padT + 12, currPy - 8));
+    }
+
+    // =========================================================================
+    // TAB 3 RENDERER: WEB LIVE PROTOTYPER & ROI SANDBOX
+    // =========================================================================
+    function renderSandboxUI() {
+      var s = appState.schema;
+      var sb = appState.sandbox;
+      var passiveSPS = calcPassiveSPS(s, sb.levels, sb.prestigeMult);
+      var actionExpectedSPS = calcActionBridgeExpectedSPS(s, passiveSPS, sb.prestigeMult, 1.0);
+      var totalSPS = passiveSPS + actionExpectedSPS;
+
+      document.getElementById('sandboxCurrencyTitle').textContent = s.currencyName;
+      document.getElementById('sandboxPrestigeBadge').textContent = '환생 배율: ' + sb.prestigeMult.toFixed(2) + '× (' + sb.prestigePoints + ' pt)';
+      document.getElementById('sandboxCurrencyValue').textContent = formatNum(sb.currency, s.precision) + ' ' + s.currencySymbol;
+      document.getElementById('sandboxSPSValue').textContent = '+' + formatNum(totalSPS, s.precision) + ' / sec (패시브 ' + formatNum(passiveSPS, s.precision) + ')';
+      document.getElementById('sandboxLifetimeValue').textContent = formatNum(sb.lifetimeCurrency, s.precision);
+
+      var mins = Math.floor(sb.elapsedSec / 60);
+      var secs = Math.floor(sb.elapsedSec % 60);
+      document.getElementById('sandboxElapsedTime').textContent = mins + '분 ' + secs + '초';
+
+      // Click & Action button labels
+      var clickGain = s.clickBase * sb.prestigeMult;
+      document.getElementById('lblManualClickGain').textContent = '+' + formatNum(clickGain, s.precision) + ' ' + s.currencySymbol + ' 획득';
+
+      var killGain = (s.actionBridge.rewardBase * sb.prestigeMult) + (passiveSPS * s.actionBridge.spsRatioBonus);
+      document.getElementById('lblActionKillGain').textContent = '+' + formatNum(killGain, s.precision) + ' ' + s.currencySymbol + ' (크리 ' + Math.round(s.actionBridge.critChance * 100) + '%)';
+
+      var waveGain = passiveSPS * s.actionBridge.waveClearBonusMult;
+      document.getElementById('lblWaveClearGain').textContent = '+' + formatNum(waveGain, s.precision) + ' ' + s.currencySymbol;
+
+      // Prestige button state
+      var pendingPts = calcPrestigeGain(s, sb.runCurrency);
+      var btnPrestige = document.getElementById('btnSandboxPrestige');
+      document.getElementById('lblPendingPrestige').textContent = '+' + pendingPts + ' ' + s.prestigeCurrencyName.split(' ')[0];
+      btnPrestige.disabled = (pendingPts <= 0);
+
+      // Mapped live stats
+      var mappedStats = computeStatMappings(s, sb);
+      var statsGrid = document.getElementById('sandboxLiveMappedStats');
+      statsGrid.innerHTML = '';
+      mappedStats.forEach(function(ms) {
+        var box = document.createElement('div');
+        box.className = 'bg-slate-900 p-2.5 rounded-lg border border-slate-800';
+        box.innerHTML = '<div class="text-[11px] text-slate-400 truncate">' + ms.name + '</div>' +
+                        '<div class="text-sm font-bold text-sky-300 mono mt-0.5">' + ms.mappedValue + ' ' + ms.unit + '</div>';
+        statsGrid.appendChild(box);
+      });
+
+      // Generator Purchase Cards with Live ROI & Payback Highlighting
+      var roiList = evaluateROIList(s, sb);
+      var genContainer = document.getElementById('sandboxGeneratorCards');
+      genContainer.innerHTML = '';
+
+      roiList.forEach(function(item) {
+        var card = document.createElement('div');
+        var highlightClass = item.isBestAffordable
+          ? 'roi-best-affordable bg-emerald-950/20'
+          : item.isBestOverall
+            ? 'roi-best-target bg-slate-900'
+            : 'bg-slate-900';
+
+        card.className = 'p-3 rounded-xl border border-slate-800 transition flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ' + highlightClass;
+
+        var badgeHtml = '';
+        if (item.isBestAffordable) {
+          badgeHtml = '<span class="text-[11px] px-2 py-0.5 rounded bg-emerald-600 text-white font-bold mono">구매가능 ROI 1위 (최적)</span>';
+        } else if (item.isBestOverall) {
+          badgeHtml = '<span class="text-[11px] px-2 py-0.5 rounded bg-sky-900 text-sky-200 border border-sky-700 font-semibold mono">다음 추천 목표</span>';
+        } else if (item.isWorstOverall) {
+          badgeHtml = '<span class="text-[11px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 mono">최저 효율</span>';
+        }
+
+        card.innerHTML = [
+          '<div class="space-y-1">',
+          '  <div class="flex flex-wrap items-center gap-2">',
+          '    <span class="text-sm font-bold text-white">' + item.name + '</span>',
+          '    <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 mono">Lv.' + item.level + '</span>',
+               badgeHtml,
+          '  </div>',
+          '  <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 mono">',
+          '    <span>생산 증가: <strong class="text-emerald-300">+' + formatNum(item.deltaSPS, s.precision) + '/s</strong></span>',
+          '    <span>본전 회수(Payback): <strong class="text-sky-300">' + item.paybackSec.toFixed(1) + '초</strong></span>',
+          '    <span>효율(ΔSPS÷Cost): <strong class="text-amber-300">' + (item.roi * 100).toFixed(2) + '%/s</strong></span>',
+          '  </div>',
+          '</div>',
+          '<button type="button" data-buy-id="' + item.id + '" ' + (item.affordable ? '' : 'disabled') + ' class="buy-gen-btn px-4 py-2.5 min-h-[44px] rounded-lg font-bold text-xs mono transition ' +
+            (item.affordable ? 'bg-blue-600 hover:bg-blue-500 text-white shadow' : 'bg-slate-800 text-slate-500 cursor-not-allowed') + '">',
+          '  구매 (' + formatNum(item.cost, s.precision) + ' ' + s.currencySymbol + ')',
+          '</button>'
+        ].join('');
+        genContainer.appendChild(card);
+      });
+
+      var buyBtns = genContainer.querySelectorAll('.buy-gen-btn');
+      buyBtns.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          var genId = e.currentTarget.getAttribute('data-buy-id');
+          tryBuyInSandbox(genId);
+        });
+      });
+    }
+
+    function tryBuyInSandbox(genId) {
+      var gen = appState.schema.generators.find(function(g) { return g.id === genId; });
+      if (!gen) return false;
+      var lvl = appState.sandbox.levels[genId] || 0;
+      var cost = calcGeneratorCost(gen, lvl);
+      if (appState.sandbox.currency < cost) return false;
+      appState.sandbox.currency -= cost;
+      appState.sandbox.levels[genId] = lvl + 1;
+      persistState();
+      if (appState.activeTab === 'sandbox') renderSandboxUI();
+      return true;
+    }
+
+    // =========================================================================
+    // TAB 4 RENDERER: MULTI-ENGINE CODE EXPORTER
+    // =========================================================================
+    function renderExporterUI() {
+      var target = appState.exportTarget;
+      var filenames = {
+        typescript: 'IdleForgeEngine.ts (TypeScript Headless Core)',
+        unity_csharp: 'IdleForgeCoreEngine.cs (Unity C# Runtime)',
+        godot_gdscript: 'IdleForgeEconomy.gd (Godot 4 Singleton)',
+        json_schema: 'idleforge_schema.json (Raw Declarative Schema)'
+      };
+      document.getElementById('lblExportFilename').textContent = filenames[target] || 'IdleForgeEngine.ts';
+      document.getElementById('exportCodeBlock').textContent = generateEngineExportCode(appState.schema, target);
+    }
+
+    // =========================================================================
+    // 5. EVENT LISTENERS & SANDBOX REAL-TIME LOOP
+    // =========================================================================
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        var tab = e.currentTarget.getAttribute('data-tab');
+        switchTab(tab);
+      });
+    });
+
+    document.getElementById('presetSelect').addEventListener('change', function(e) {
+      var newPreset = e.target.value;
+      if (PRESET_SCHEMAS[newPreset]) {
+        appState.presetId = newPreset;
+        appState.schema = cloneDeep(PRESET_SCHEMAS[newPreset]);
+        resetSandboxState();
+        persistState();
+        renderSchemaInputs();
+        runAndRenderSimulation();
+        if (appState.activeTab === 'bridge') renderBridgeAndStatMapper();
+        if (appState.activeTab === 'sandbox') renderSandboxUI();
+        if (appState.activeTab === 'export') renderExporterUI();
+      }
+    });
+
+    document.getElementById('btnTogglePrecision').addEventListener('click', function() {
+      appState.schema.precision = (appState.schema.precision === 'StandardDouble') ? 'BigDouble' : 'StandardDouble';
+      document.getElementById('lblPrecisionMode').textContent = appState.schema.precision;
+      persistState();
+      runAndRenderSimulation();
+      if (appState.activeTab === 'sandbox') renderSandboxUI();
+      if (appState.activeTab === 'export') renderExporterUI();
+    });
+
+    document.getElementById('btnResetPreset').addEventListener('click', function() {
+      appState.schema = cloneDeep(PRESET_SCHEMAS[appState.presetId]);
+      resetSandboxState();
+      persistState();
+      renderSchemaInputs();
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('inpPrestigeThreshold').addEventListener('change', function(e) {
+      var v = parseFloat(e.target.value);
+      if (v > 100) {
+        appState.schema.prestigeThreshold = v;
+        persistState();
+        runAndRenderSimulation();
+      }
+    });
+
+    document.getElementById('inpClearGoal').addEventListener('change', function(e) {
+      var v = parseFloat(e.target.value);
+      if (v > 1000) {
+        appState.schema.clearGoal = v;
+        persistState();
+        runAndRenderSimulation();
+      }
+    });
+
+    document.getElementById('inpPrestigeExp').addEventListener('input', function(e) {
+      var v = parseFloat(e.target.value);
+      appState.schema.prestigeExponent = v;
+      document.getElementById('valPrestigeExp').textContent = v.toFixed(2);
+      persistState();
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('inpPrestigeScale').addEventListener('input', function(e) {
+      var v = parseFloat(e.target.value);
+      appState.schema.prestigeScale = v;
+      document.getElementById('valPrestigeScale').textContent = '+' + Math.round(v * 100) + '%';
+      persistState();
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('simHorizonSelect').addEventListener('change', function(e) {
+      appState.simHorizonMin = parseInt(e.target.value, 10) || 120;
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('btnToggleScale').addEventListener('click', function() {
+      appState.chartScale = (appState.chartScale === 'Log10') ? 'Linear' : 'Log10';
+      document.getElementById('lblChartScale').textContent = appState.chartScale;
+      runAndRenderSimulation();
+    });
+
+    // Tab 2 Action Bridge Controls
+    document.getElementById('chkActionBridgeEnabled').addEventListener('change', function(e) {
+      appState.schema.actionBridge.enabled = e.target.checked;
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngEventsPerSec').addEventListener('input', function(e) {
+      appState.schema.actionBridge.eventsPerSec = parseFloat(e.target.value);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngSpsRatioBonus').addEventListener('input', function(e) {
+      appState.schema.actionBridge.spsRatioBonus = parseFloat(e.target.value);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngCritChance').addEventListener('input', function(e) {
+      appState.schema.actionBridge.critChance = parseFloat(e.target.value);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngCritMult').addEventListener('input', function(e) {
+      appState.schema.actionBridge.critMultiplier = parseFloat(e.target.value);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngWaveInterval').addEventListener('input', function(e) {
+      appState.schema.actionBridge.waveIntervalSec = parseInt(e.target.value, 10);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngWaveMult').addEventListener('input', function(e) {
+      appState.schema.actionBridge.waveClearBonusMult = parseInt(e.target.value, 10);
+      persistState();
+      renderBridgeAndStatMapper();
+    });
+
+    document.getElementById('rngStatPreviewStage').addEventListener('input', function(e) {
+      appState.statPreviewSlider = parseInt(e.target.value, 10);
+      renderBridgeAndStatMapper();
+    });
+
+    // Tab 3 Sandbox Controls
+    document.querySelectorAll('.speed-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        var spd = parseInt(e.currentTarget.getAttribute('data-speed'), 10) || 1;
+        appState.sandbox.speedMult = spd;
+        document.querySelectorAll('.speed-btn').forEach(function(b) {
+          b.className = 'speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono text-slate-400 hover:text-white';
+        });
+        e.currentTarget.className = 'speed-btn px-2.5 py-1.5 min-h-[38px] rounded text-xs font-bold mono bg-blue-600 text-white';
+      });
+    });
+
+    document.getElementById('sandboxBotSelect').addEventListener('change', function(e) {
+      appState.sandbox.botMode = e.target.value;
+    });
+
+    document.getElementById('btnManualClick').addEventListener('click', function() {
+      var gain = appState.schema.clickBase * appState.sandbox.prestigeMult;
+      appState.sandbox.currency += gain;
+      appState.sandbox.runCurrency += gain;
+      appState.sandbox.lifetimeCurrency += gain;
+      renderSandboxUI();
+    });
+
+    document.getElementById('btnTriggerKillEvent').addEventListener('click', function() {
+      var ab = appState.schema.actionBridge;
+      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult);
+      var isCrit = Math.random() < ab.critChance;
+      var reward = (ab.rewardBase * appState.sandbox.prestigeMult) + (sps * ab.spsRatioBonus);
+      if (isCrit) reward *= ab.critMultiplier;
+      appState.sandbox.currency += reward;
+      appState.sandbox.runCurrency += reward;
+      appState.sandbox.lifetimeCurrency += reward;
+      renderSandboxUI();
+    });
+
+    document.getElementById('btnTriggerWaveClear').addEventListener('click', function() {
+      var ab = appState.schema.actionBridge;
+      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult);
+      var reward = Math.max(25, sps * ab.waveClearBonusMult);
+      appState.sandbox.currency += reward;
+      appState.sandbox.runCurrency += reward;
+      appState.sandbox.lifetimeCurrency += reward;
+      renderSandboxUI();
+    });
+
+    document.getElementById('btnSandboxPrestige').addEventListener('click', function() {
+      var pts = calcPrestigeGain(appState.schema, appState.sandbox.runCurrency);
+      if (pts <= 0) return;
+      appState.sandbox.prestigePoints += pts;
+      appState.sandbox.prestigeMult = calcPrestigeMult(appState.schema, appState.sandbox.prestigePoints);
+      appState.sandbox.currency = 0;
+      appState.sandbox.runCurrency = 0;
+      initSandboxLevels();
+      persistState();
+      renderSandboxUI();
+    });
+
+    document.getElementById('btnSandboxReset').addEventListener('click', function() {
+      resetSandboxState();
+      persistState();
+      renderSandboxUI();
+    });
+
+    // Tab 4 Exporter Controls
+    document.querySelectorAll('.export-lang-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        var target = e.currentTarget.getAttribute('data-target');
+        appState.exportTarget = target;
+        document.querySelectorAll('.export-lang-btn').forEach(function(b) {
+          b.classList.remove('tab-active');
+          b.classList.add('tab-inactive');
+        });
+        e.currentTarget.classList.remove('tab-inactive');
+        e.currentTarget.classList.add('tab-active');
+        renderExporterUI();
+      });
+    });
+
+    document.getElementById('btnCopyExportCode').addEventListener('click', function() {
+      var code = document.getElementById('exportCodeBlock').textContent;
+      StorageAdapter.copyText(code, function() {
+        var badge = document.getElementById('copyFeedbackBadge');
+        badge.classList.remove('hidden');
+        setTimeout(function() { badge.classList.add('hidden'); }, 2200);
+      });
+    });
+
+    // Save / Snapshot Modal Controls (with backdrop click & ESC support)
+    var saveModalBackdrop = document.getElementById('saveModalBackdrop');
+    var saveModalPanel = document.getElementById('saveModalPanel');
+
+    function openSaveModal() {
+      var token = StorageAdapter.encodeToken({
+        presetId: appState.presetId,
+        schema: appState.schema,
+        sandbox: appState.sandbox
+      });
+      document.getElementById('txtSchemaToken').value = token;
+      document.getElementById('modalFeedbackMsg').classList.add('hidden');
+      saveModalBackdrop.classList.remove('hidden');
+    }
+
+    function closeSaveModal() {
+      saveModalBackdrop.classList.add('hidden');
+    }
+
+    document.getElementById('btnOpenSaveModal').addEventListener('click', openSaveModal);
+    document.getElementById('btnOpenSaveModalDesktop').addEventListener('click', openSaveModal);
+    document.getElementById('btnCloseSaveModal').addEventListener('click', closeSaveModal);
+
+    saveModalBackdrop.addEventListener('click', function() {
+      closeSaveModal();
+    });
+    saveModalPanel.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && !saveModalBackdrop.classList.contains('hidden')) {
+        closeSaveModal();
+      }
+    });
+
+    document.getElementById('btnCopyToken').addEventListener('click', function() {
+      var token = document.getElementById('txtSchemaToken').value;
+      StorageAdapter.copyText(token, function() {
+        var msg = document.getElementById('modalFeedbackMsg');
+        msg.textContent = '백업 토큰이 클립보드에 복사되었습니다.';
+        msg.classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('btnLoadToken').addEventListener('click', function() {
+      var raw = document.getElementById('txtSchemaToken').value;
+      var decoded = StorageAdapter.decodeToken(raw);
+      var msg = document.getElementById('modalFeedbackMsg');
+      if (decoded && decoded.schema) {
+        appState.presetId = decoded.presetId || 'vampire_survivor';
+        appState.schema = decoded.schema;
+        if (decoded.sandbox) appState.sandbox = decoded.sandbox;
+        persistState();
+        renderSchemaInputs();
+        runAndRenderSimulation();
+        msg.textContent = '스키마 및 진행 상태가 성공적으로 복원되었습니다!';
+        msg.classList.remove('hidden');
+      } else {
+        msg.textContent = '유효하지 않은 토큰 형식입니다.';
+        msg.classList.remove('hidden');
+      }
+    });
+
+    // Real-time Sandbox Loop (runs at 4 ticks per second)
+    var sandboxInterval = null;
+    function startSandboxLoop() {
+      if (sandboxInterval) clearInterval(sandboxInterval);
+      sandboxInterval = setInterval(function() {
+        var dt = 0.25 * appState.sandbox.speedMult;
+        var s = appState.schema;
+        var sb = appState.sandbox;
+        var passiveSPS = calcPassiveSPS(s, sb.levels, sb.prestigeMult);
+        var actionSPS = calcActionBridgeExpectedSPS(s, passiveSPS, sb.prestigeMult, 1.0);
+        var gained = (passiveSPS + actionSPS) * dt;
+
+        sb.currency += gained;
+        sb.runCurrency += gained;
+        sb.lifetimeCurrency += gained;
+        sb.elapsedSec += dt;
+
+        if (sb.botMode !== 'manual') {
+          var evalList = evaluateROIList(s, sb);
+          var pick = null;
+          if (sb.botMode === 'optimal') {
+            pick = evalList.find(function(x) { return x.isBestAffordable; });
+          } else if (sb.botMode === 'normal') {
+            var aff = evalList.filter(function(x) { return x.affordable; });
+            pick = aff[0] || null;
+          } else if (sb.botMode === 'worst') {
+            var affWorst = evalList.filter(function(x) { return x.affordable; }).sort(function(a, b) { return a.roi - b.roi; });
+            pick = affWorst[0] || null;
+          }
+          if (pick) {
+            tryBuyInSandbox(pick.id);
+          }
+        }
+
+        if (appState.activeTab === 'sandbox') {
+          renderSandboxUI();
+        }
+      }, 250);
+    }
+
+    window.addEventListener('resize', function() {
+      if (appState.activeTab === 'schema' && appState.simResults) {
+        drawEconomyVarianceChart(appState.simResults);
+        drawPrestigeCycleChart(appState.simResults);
+      } else if (appState.activeTab === 'bridge') {
+        renderBridgeAndStatMapper();
+      }
+    });
+
+    // Expose clean test helper hook for automated verification
+    window.__IDLEFORGE_APP__ = {
+      switchTab: switchTab,
+      openSaveModal: openSaveModal,
+      closeSaveModal: closeSaveModal,
+      getState: function() { return appState; }
+    };
+
+    // Initial Bootstrap
+    window.addEventListener('load', function() {
+      renderSchemaInputs();
+      runAndRenderSimulation();
+      startSandboxLoop();
+    });
+  })();
+  </script>
+</body>
+</html>
