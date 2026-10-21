@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>IdleForge Studio — 증분형·아이들러·하이브리드 엔진 플랫폼</title>
+  <title>IdleForge Studio v2.0 — 목표 플레이타임 & 자유 업그레이드·멀티자원 빌더</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -71,6 +71,7 @@
     .justify-center { justify-content: center; }
     .justify-between { justify-content: space-between; }
     .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 0.25rem; }
     .gap-2 { gap: 0.5rem; }
     .gap-3 { gap: 0.75rem; }
     .gap-4 { gap: 1rem; }
@@ -191,21 +192,25 @@
     .z-50 { z-index: 50; }
     .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .stack-md > * + * { margin-top: 0.75rem; }
     .stack-lg > * + * { margin-top: 1rem; }
     button, select, input, textarea { font-family: inherit; color: inherit; background-color: #0f172a; border: 1px solid #334155; }
     button { cursor: pointer; }
     pre { margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 420px; }
-    #schemaGeneratorList { max-height: 460px; }
+    #schemaGeneratorList { max-height: 520px; }
     #saveModalBackdrop { background-color: rgba(2, 6, 23, 0.82); }
     @media (min-width: 640px) {
       .sm-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sm-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .sm-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .sm-row { flex-direction: row; align-items: center; justify-content: space-between; }
     }
     @media (min-width: 768px) {
       .md-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .md-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .md-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     }
     @media (min-width: 1024px) {
       .lg-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -217,7 +222,6 @@
       .lg-hide { display: none !important; }
       .lg-show-flex { display: inline-flex !important; }
     }
-
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
@@ -231,9 +235,9 @@
           <div>
             <div class="flex items-center gap-2">
               <h1 class="text-sm sm:text-base font-bold tracking-tight text-white">IdleForge Studio</h1>
-              <span class="text-xs px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 mono">TS Engine v1.0</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono">v2.0 Custom Builder</span>
             </div>
-            <p class="text-xs text-slate-400 hidden sm:block">증분·아이들러·하이브리드 수식 스키마 · 4대 편차 시뮬레이터 · 타 엔진 코드 익스포터</p>
+            <p class="text-xs text-slate-400 hidden sm:block">목표 플레이타임 역산 설계 · 자유 업그레이드 수 · 다중 자원 생산/초당 소모 모델링</p>
           </div>
         </div>
 
@@ -244,11 +248,12 @@
 
       <!-- Preset Selector + Precision Toggle + Save -->
       <div class="flex flex-wrap items-center gap-2">
-        <label for="presetSelect" class="text-xs text-slate-400 font-medium">장르 프리셋:</label>
+        <label for="presetSelect" class="text-xs text-slate-400 font-medium">템플릿:</label>
         <select id="presetSelect" class="bg-slate-950 border border-slate-700 text-slate-100 text-xs rounded-lg px-2.5 py-2 min-h-[44px] focus:outline-none focus:border-blue-500">
-          <option value="vampire_survivor">1. Vampire Survivors × Idle (뱀서라이크 혼합)</option>
-          <option value="deep_space_clicker">2. Quantum Dyson Idle (정통 하드코어 증분형)</option>
-          <option value="fps_looter_idle">3. Cyber Mercenary FPS × Idle (FPS 루트슈터 혼합)</option>
+          <option value="custom_4h_builder">1. 4시간 목표 멀티자원 빌더 (Custom 4h Builder)</option>
+          <option value="vampire_survivor">2. Vampire Survivors × Idle (뱀서라이크 혼합)</option>
+          <option value="deep_space_clicker">3. Quantum Dyson Idle (정통 하드코어 증분형)</option>
+          <option value="fps_looter_idle">4. Cyber Mercenary FPS × Idle (FPS 루트슈터 혼합)</option>
         </select>
 
         <button id="btnTogglePrecision" type="button" class="px-3 py-2 min-h-[44px] rounded-lg bg-indigo-950 hover:bg-indigo-900 text-indigo-200 border border-indigo-700 text-xs font-semibold mono">
@@ -264,7 +269,7 @@
     <!-- Main 4-Tab Bar -->
     <div class="max-w-7xl mx-auto mt-2.5 grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-1.5">
       <button id="tabBtn_schema" data-tab="schema" type="button" class="tab-btn tab-active px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
-        <span>1. 수치·편차 시뮬레이터</span>
+        <span>1. 목표시간·자유 업글·자원 빌더</span>
       </button>
       <button id="tabBtn_bridge" data-tab="bridge" type="button" class="tab-btn tab-inactive px-3 py-2.5 min-h-[44px] rounded-lg text-xs sm:text-sm font-semibold border transition flex items-center justify-center gap-1.5">
         <span>2. 액션 브릿지·스탯 매퍼</span>
@@ -282,49 +287,112 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 py-4 sm:px-5 space-y-5">
 
     <!-- =================================================================== -->
-    <!-- TAB 1: SCHEMA EDITOR & 4-POLICY VARIANCE SIMULATOR (Modules 1, 2&6, 10) -->
+    <!-- TAB 1: TARGET PLAYTIME BUILDER, DYNAMIC UPGRADES & MULTI-RESOURCE   -->
     <!-- =================================================================== -->
     <section id="panel_schema" class="space-y-4 stack-lg">
+
+      <!-- STEP 1: TARGET PLAYTIME & GOAL-SEEK RECOMMENDATION BANNER -->
+      <div class="studio-card-accent p-4 space-y-3 stack-md border border-blue-800">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between lg-row gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-blue-600 text-white text-xs font-extrabold mono">STEP 1</span>
+              <h2 class="text-sm sm:text-base font-bold text-white">목표 플레이타임 설정 & 클리어 목표치 자동 역산기 (Goal-Seek Blueprint)</h2>
+            </div>
+            <p class="text-xs text-slate-300 mt-1">목표 플레이타임(예: 4시간)과 업그레이드 개수를 설정하면, 시간에 따른 예상 자원량과 **4시간 기준 적정 클리어 목표치·환생 기준치**를 수학적으로 역산합니다.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-2">
+              <label for="inpTargetPlaytimeHours" class="text-xs text-slate-300 font-semibold">목표 플레이타임(시간):</label>
+              <input id="inpTargetPlaytimeHours" type="number" min="0.5" max="100" step="0.5" value="4" class="w-16 bg-slate-900 border border-blue-500 rounded px-2 py-1 text-xs font-bold mono text-emerald-300 text-center" />
+              <span class="text-xs text-slate-400 mono">h (<span id="lblTargetPlaytimeMin">240</span>분)</span>
+            </div>
+
+            <button id="btnApplyRecommendedGoal" type="button" class="px-3.5 py-2 min-h-[42px] rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-extrabold text-white border border-emerald-400 shadow transition">
+              역산된 4시간 목표치 즉시 적용
+            </button>
+          </div>
+        </div>
+
+        <!-- Goal-Seek Recommended Values & Time Checkpoints (25% / 50% / 75% / 100%) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-3 items-center">
+          <div class="lg:col-span-5 lg-col-5 bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5">
+            <div class="text-xs text-slate-400">목표 시간(<span id="lblRecTargetH">4.0</span>시간) 도달 시 예상 누적 자원 & 권장 클리어 목표:</div>
+            <div class="flex items-baseline justify-between">
+              <span class="text-xs text-sky-300 font-semibold">권장 최종 클리어 목표(Normal 기준):</span>
+              <span id="lblRecommendedClearGoal" class="text-base sm:text-lg font-extrabold text-emerald-400 mono">320.00M G</span>
+            </div>
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="text-slate-400">권장 1차 환생 기준(약 18% 진행 시점):</span>
+              <span id="lblRecommendedPrestige" class="font-bold text-purple-300 mono">50.00K G</span>
+            </div>
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="text-slate-400">최선(Optimal) ~ 최악(Worst) 누적 범위:</span>
+              <span id="lblRecommendedBand" class="font-semibold text-amber-300 mono">45.0M ~ 1.2B</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 lg-col-7 grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-2" id="playtimeCheckpointCards">
+            <!-- Populated dynamically with 25% (1h), 50% (2h), 75% (3h), 100% (4h) expected resources & SPS -->
+          </div>
+        </div>
+      </div>
+
       <!-- Top KPI Strip from Simulation -->
       <div class="grid grid-cols-2 lg:grid-cols-4 lg-grid-4 gap-2.5">
         <div class="studio-card p-3">
           <div class="text-xs text-slate-400">최선(Optimal) 클리어 예상</div>
-          <div id="kpiOptimalClear" class="text-lg sm:text-xl font-bold text-emerald-400 mono mt-0.5">28.4 분</div>
-          <div id="kpiOptimalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 8.5분 | 총 3회 환생</div>
+          <div id="kpiOptimalClear" class="text-lg sm:text-xl font-bold text-emerald-400 mono mt-0.5">142.0 분</div>
+          <div id="kpiOptimalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 28.5분 | 총 3회 환생</div>
         </div>
         <div class="studio-card p-3">
           <div class="text-xs text-slate-400">일반(Normal) 클리어 예상</div>
-          <div id="kpiNormalClear" class="text-lg sm:text-xl font-bold text-sky-400 mono mt-0.5">44.2 분</div>
-          <div id="kpiNormalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 13.0분 | 총 2회 환생</div>
+          <div id="kpiNormalClear" class="text-lg sm:text-xl font-bold text-sky-400 mono mt-0.5">240.0 분</div>
+          <div id="kpiNormalPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 42.0분 | 총 2회 환생</div>
         </div>
         <div class="studio-card p-3">
           <div class="text-xs text-slate-400">랜덤(Random) 클리어 예상</div>
-          <div id="kpiRandomClear" class="text-lg sm:text-xl font-bold text-amber-400 mono mt-0.5">68.5 분</div>
-          <div id="kpiRandomPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 18.2분 | 편차 대역</div>
+          <div id="kpiRandomClear" class="text-lg sm:text-xl font-bold text-amber-400 mono mt-0.5">310.5 분</div>
+          <div id="kpiRandomPrestige" class="text-xs text-slate-400 mt-0.5">첫 환생: 55.2분 | 편차 대역</div>
         </div>
         <div class="studio-card p-3">
           <div class="text-xs text-slate-400">최악(Worst) 클리어 상한선</div>
-          <div id="kpiWorstClear" class="text-lg sm:text-xl font-bold text-rose-400 mono mt-0.5">114.0 분</div>
+          <div id="kpiWorstClear" class="text-lg sm:text-xl font-bold text-rose-400 mono mt-0.5">480.0 분</div>
           <div id="kpiWorstPrestige" class="text-xs text-slate-400 mt-0.5">정체 벽(Wall) 경보 확인</div>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4">
-        <!-- Left Column: TS Schema & Generator Numerical Editor (5 cols) -->
+        <!-- Left Column: Custom Resource Manager & Dynamic Upgrade Builder (5 cols) -->
         <div class="lg:col-span-5 lg-col-5 studio-card p-4 space-y-4 stack-lg">
           <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
             <div>
-              <h2 class="text-sm font-bold text-white">1. TypeScript 수치·수식 스키마 에디터</h2>
-              <p class="text-xs text-slate-400">수치 조정 시 우측 4대 플레이 편차 그래프가 즉시 재계산됩니다</p>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded bg-emerald-600 text-white text-xs font-extrabold mono">STEP 2</span>
+                <h2 class="text-sm font-bold text-white">자원 종류 & 업그레이드 개수·초당 소모량 설정</h2>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">업그레이드 개수를 마음대로 늘리거나 줄이고 각자 어떤 자원을 초당 몇 먹고 생산할지 지정하세요</p>
             </div>
             <button id="btnResetPreset" type="button" class="px-2.5 py-1.5 min-h-[38px] rounded bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
               초기화
             </button>
           </div>
 
+          <!-- Dynamic Multi-Resource Pool Editor -->
+          <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-sky-300">게임 자원(Resources) 목록 & 기본 초당 수급량</span>
+              <button id="btnAddResource" type="button" class="px-2.5 py-1 min-h-[34px] rounded bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white">
+                + 새 자원 추가
+              </button>
+            </div>
+            <div id="schemaResourceList" class="space-y-1.5"></div>
+          </div>
+
           <!-- Global Economy & Prestige Formula Params -->
           <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2.5 stack-md">
-            <div class="text-xs font-semibold text-blue-300 mono">전역 환생 & 클리어 수식: PrestigePts = floor((Run ÷ Threshold)^Exp × 5)</div>
+            <div class="text-xs font-semibold text-blue-300 mono">전역 목표 & 환생 수식: PrestigePts = floor((Run ÷ Threshold)^Exp × 5)</div>
             <div class="grid grid-cols-2 gap-2.5">
               <div>
                 <label for="inpPrestigeThreshold" class="block text-xs text-slate-400 mb-1">첫 환생 기준 재화 (Threshold)</label>
@@ -332,7 +400,7 @@
               </div>
               <div>
                 <label for="inpClearGoal" class="block text-xs text-slate-400 mb-1">최종 클리어 목표 재화 (Goal)</label>
-                <input id="inpClearGoal" type="number" step="1000000" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs mono text-white" value="250000000" />
+                <input id="inpClearGoal" type="number" step="1000000" class="w-full bg-slate-950 border border-slate-700 rounded px-2.5 py-1.5 text-xs mono text-white" value="320000000" />
               </div>
               <div>
                 <label for="inpPrestigeExp" class="block text-xs text-slate-400 mb-1">환생 지수 (Exp: <span id="valPrestigeExp" class="mono text-sky-300">0.48</span>)</label>
@@ -345,29 +413,43 @@
             </div>
           </div>
 
-          <!-- Generators List Editor -->
+          <!-- Dynamic Generators / Upgrades Builder -->
           <div class="space-y-2.5 stack-md">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold text-slate-300">생산기(Generator) 티어별 파라미터 (Cost = Base × Growth^Lv)</span>
-              <span class="text-xs text-slate-400 mono">Softcap 감쇠 포함</span>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold text-white">업그레이드/생산기 목록 (총 <span id="lblGeneratorCount" class="text-emerald-400 mono">5</span>개)</span>
+                <span class="block text-[11px] text-slate-400">각 업그레이드별 생산 자원(+/s)과 초당 소모 자원(-/s)을 직접 지정</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button id="btnAutoScaleUpgrades" type="button" class="px-2.5 py-1.5 min-h-[36px] rounded bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-sky-300 border border-slate-700">
+                  티어 수식 자동배분
+                </button>
+                <button id="btnAddGenerator" type="button" class="px-3 py-1.5 min-h-[36px] rounded bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow">
+                  + 업그레이드 추가
+                </button>
+              </div>
             </div>
-            <div id="schemaGeneratorList" class="space-y-2.5 stack-md max-h-[460px] overflow-y-auto pr-1"></div>
+            <div id="schemaGeneratorList" class="space-y-2.5 stack-md max-h-[520px] overflow-y-auto pr-1"></div>
           </div>
         </div>
 
-        <!-- Right Column: 4-Policy Variance & Prestige Cycle Simulator (7 cols) -->
+        <!-- Right Column: 4-Policy Variance & Multi-Resource Balance Simulator (7 cols) -->
         <div class="lg:col-span-7 lg-col-7 space-y-4 stack-lg">
           <div class="studio-card p-4 space-y-3 stack-md">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
               <div>
-                <h2 class="text-sm font-bold text-white">2 & 6. 플레이 편차(최선·일반·랜덤·최악) 경제 & 환생 시뮬레이터</h2>
-                <p class="text-xs text-slate-400">의사결정 편차 대역(Confidence Band), 환생 마커(P1~Pn), 정체 벽(Wall) 자동 진단</p>
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded bg-purple-600 text-white text-xs font-extrabold mono">STEP 3</span>
+                  <h2 class="text-sm font-bold text-white">시간대별 예상 자원 곡선 & 자원별 생산/소모 병목 리포트</h2>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">목표 시간(예: 4시간=240분) 동안의 4대 플레이 편차 곡선과 초당 자원 소모 병목을 실시간 계산합니다</p>
               </div>
               <div class="flex items-center gap-1.5">
                 <select id="simHorizonSelect" class="bg-slate-950 border border-slate-700 text-xs rounded px-2.5 py-1.5 min-h-[38px] text-slate-200 mono">
-                  <option value="60">시뮬 시간: 60분</option>
-                  <option value="120" selected>시뮬 시간: 120분</option>
-                  <option value="240">시뮬 시간: 240분</option>
+                  <option value="60">시뮬 시간: 60분 (1h)</option>
+                  <option value="120">시뮬 시간: 120분 (2h)</option>
+                  <option value="240" selected>시뮬 시간: 240분 (4h)</option>
+                  <option value="480">시뮬 시간: 480분 (8h)</option>
                 </select>
                 <button id="btnToggleScale" type="button" class="px-2.5 py-1.5 min-h-[38px] rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-sky-300 border border-slate-700 mono">
                   스케일: <span id="lblChartScale">Log10</span>
@@ -378,14 +460,23 @@
             <!-- Legend -->
             <div class="flex flex-wrap items-center gap-3 text-xs">
               <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-400 inline-block"></span>언제나 최선 (Optimal ROI)</span>
-              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-sky-400 inline-block"></span>일반적 플레이 (Human Heuristic)</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-sky-400 inline-block"></span>일반적 플레이 (Normal 기준선)</span>
               <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-400 inline-block"></span>랜덤 플레이 (Stochastic)</span>
-              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-rose-400 inline-block"></span>언제나 최악 (Worst Lower Bound)</span>
+              <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-rose-400 inline-block"></span>언제나 최악 (Worst 상한선)</span>
             </div>
 
             <!-- Primary Economy Curve Canvas -->
             <div class="relative w-full h-64 sm:h-72 bg-slate-950 rounded-lg border border-slate-800 p-2">
               <canvas id="economyVarianceCanvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Multi-Resource Production vs Consumption Flow Table -->
+            <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white">자원별 초당 생산(+/s) · 초당 소모(-/s) · 순수익(Net SPS) 수지 분석</span>
+                <span class="text-[11px] text-slate-400 mono">소모량 &gt; 생산량 시 가동률(Supply %) 자동 감쇠</span>
+              </div>
+              <div id="multiResourceFlowTable" class="grid grid-cols-1 sm:grid-cols-3 sm-grid-3 gap-2 text-xs"></div>
             </div>
 
             <!-- Secondary Prestige Cycle Breakdown & Wall Diagnostics -->
@@ -410,7 +501,7 @@
                 </div>
                 <div class="pt-2 border-t border-slate-800 mt-2 flex items-center justify-between text-xs text-slate-400">
                   <span>최선 vs 최악 클리어 배차:</span>
-                  <span id="lblSpreadRatio" class="mono font-bold text-amber-300">4.01×</span>
+                  <span id="lblSpreadRatio" class="mono font-bold text-amber-300">3.38×</span>
                 </div>
               </div>
             </div>
@@ -543,16 +634,16 @@
     <!-- =================================================================== -->
     <section id="panel_sandbox" class="hidden space-y-4 stack-lg">
       <!-- Live Dashboard Header -->
-      <div class="studio-card-accent p-4">
+      <div class="studio-card-accent p-4 space-y-3">
         <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4 items-center">
           <div class="lg:col-span-5 lg-col-5 space-y-1">
             <div class="flex items-center gap-2">
-              <span id="sandboxCurrencyTitle" class="text-xs font-semibold uppercase tracking-wider text-blue-400">Soul Shard (소울 샤드)</span>
+              <span id="sandboxCurrencyTitle" class="text-xs font-semibold uppercase tracking-wider text-blue-400">Gold (골드)</span>
               <span id="sandboxPrestigeBadge" class="text-xs px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-800 mono">환생 배율: 1.00×</span>
             </div>
             <div class="flex items-baseline gap-3">
               <div id="sandboxCurrencyValue" class="text-2xl sm:text-3xl font-extrabold text-white mono">0.0</div>
-              <div id="sandboxSPSValue" class="text-xs sm:text-sm font-semibold text-emerald-400 mono">+1.4 / sec</div>
+              <div id="sandboxSPSValue" class="text-xs sm:text-sm font-semibold text-emerald-400 mono">+1.6 / sec</div>
             </div>
             <div class="text-xs text-slate-400 flex items-center gap-3 mono">
               <span>누적 획득: <strong id="sandboxLifetimeValue" class="text-slate-200">0</strong></span>
@@ -571,13 +662,13 @@
 
             <select id="sandboxBotSelect" class="bg-slate-950 border border-slate-700 text-xs rounded-lg px-2.5 py-2 min-h-[42px] text-slate-200 font-medium">
               <option value="manual">수동 플레이 (Manual)</option>
-              <option value="optimal">오토봇: 언제나 최선 (Optimal ROI)</option>
-              <option value="normal">오토봇: 일반 플레이 (Normal)</option>
-              <option value="worst">오토봇: 언제나 최악 (Worst ROI)</option>
+              <option value="optimal">자동 규칙: 언제나 최선 (Optimal ROI)</option>
+              <option value="normal">자동 규칙: 일반 플레이 (Normal)</option>
+              <option value="worst">자동 규칙: 언제나 최악 (Worst ROI)</option>
             </select>
 
             <button id="btnSandboxPrestige" type="button" class="px-3 py-2 min-h-[42px] rounded-lg bg-purple-700 hover:bg-purple-600 disabled:opacity-40 text-xs font-bold text-white border border-purple-500 transition">
-              환생 실행 (<span id="lblPendingPrestige">+0 유물</span>)
+              환생 실행 (<span id="lblPendingPrestige">+0 코어</span>)
             </button>
 
             <button id="btnSandboxReset" type="button" class="px-2.5 py-2 min-h-[42px] rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 border border-slate-700">
@@ -585,6 +676,9 @@
             </button>
           </div>
         </div>
+
+        <!-- Live Multi-Resource Bar in Sandbox -->
+        <div id="sandboxResourceStrip" class="grid grid-cols-2 sm:grid-cols-3 sm-grid-3 gap-2 pt-2 border-t border-slate-800 text-xs"></div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 lg-grid-12 gap-4">
@@ -597,12 +691,12 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 sm-grid-2 gap-2.5">
               <button id="btnManualClick" type="button" class="p-3.5 min-h-[64px] rounded-xl bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-left border border-blue-400 shadow transition">
                 <div class="text-xs text-blue-100 font-medium">기본 코어 클릭</div>
-                <div id="lblManualClickGain" class="text-base font-extrabold text-white mono mt-0.5">+2.5 SS 획득</div>
+                <div id="lblManualClickGain" class="text-base font-extrabold text-white mono mt-0.5">+2.5 G 획득</div>
               </button>
 
               <button id="btnTriggerKillEvent" type="button" class="p-3.5 min-h-[64px] rounded-xl bg-emerald-700 hover:bg-emerald-600 active:scale-[0.99] text-left border border-emerald-500 shadow transition">
                 <div class="text-xs text-emerald-100 font-medium">액션 브릿지: 처치/명중</div>
-                <div id="lblActionKillGain" class="text-base font-extrabold text-white mono mt-0.5">+3.4 SS (크리 22%)</div>
+                <div id="lblActionKillGain" class="text-base font-extrabold text-white mono mt-0.5">+3.4 G (크리 20%)</div>
               </button>
             </div>
 
@@ -611,7 +705,7 @@
                 <div class="text-xs font-semibold text-indigo-200">웨이브 클리어 / 보스 처치 이벤트 발생</div>
                 <div class="text-[11px] text-indigo-300">외부 게임 엔진에서 스테이지 돌파 시 호출되는 대량 보상</div>
               </div>
-              <span id="lblWaveClearGain" class="text-sm font-extrabold text-amber-300 mono">+16.8 SS</span>
+              <span id="lblWaveClearGain" class="text-sm font-extrabold text-amber-300 mono">+16.8 G</span>
             </button>
           </div>
 
@@ -629,7 +723,7 @@
         <div class="lg:col-span-7 lg-col-7 studio-card p-4 space-y-3 stack-md">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
             <div>
-              <h3 class="text-sm font-bold text-white">생산기 구매 & 실시간 수학적 ROI 하이라이터</h3>
+              <h3 class="text-sm font-bold text-white">업그레이드 구매 & 실시간 수학적 ROI 하이라이터</h3>
               <p class="text-xs text-slate-400">구매 가능한 항목 중 <span class="text-emerald-400 font-semibold">최고 가성비(ΔSPS ÷ Cost 1위)</span>에 에메랄드 테두리가 자동 표시됩니다</p>
             </div>
             <span class="text-xs px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono">Payback = Cost ÷ ΔSPS</span>
@@ -648,7 +742,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between sm-row gap-3 border-b border-slate-800 pb-3">
           <div>
             <h2 class="text-sm font-bold text-white">3. 타 게임 엔진용 헤드리스(Headless) 코드 & 스키마 익스포터</h2>
-            <p class="text-xs text-slate-400">밸런싱이 완료된 수식과 스탯 매퍼를 그래픽 없는 순수 코어 코드로 내보내어 원하는 엔진(3D/2D/텍스트)에 바로 이식합니다</p>
+            <p class="text-xs text-slate-400">설정한 목표 플레이타임, 다중 자원 생산/초당 소모 수식, 업그레이드 목록을 그래픽 없는 순수 코어 코드로 내보냅니다</p>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
@@ -670,8 +764,8 @@
         <!-- Integration Architecture Guide Strip -->
         <div class="grid grid-cols-1 md:grid-cols-3 md-grid-3 gap-3 text-xs">
           <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
-            <div class="font-bold text-sky-400 mb-1">Step 1. 코어 틱 연결</div>
-            <p class="text-slate-400">타 엔진의 메인 루프(<code class="mono text-slate-200">requestAnimationFrame</code>, <code class="mono text-slate-200">Update()</code>, <code class="mono text-slate-200">_process(delta)</code>)에서 <code class="mono text-emerald-300">engine.tick(dt)</code>만 호출하세요.</p>
+            <div class="font-bold text-sky-400 mb-1">Step 1. 멀티자원 틱 연결</div>
+            <p class="text-slate-400">타 엔진의 메인 루프에서 <code class="mono text-emerald-300">engine.tick(dt)</code>를 호출하면 각 자원의 초당 생산량과 소모량, 부족 시 병목 감쇠율이 자동 계산됩니다.</p>
           </div>
           <div class="bg-slate-900 p-3 rounded-lg border border-slate-800">
             <div class="font-bold text-emerald-400 mb-1">Step 2. 액션 이벤트 주입</div>
@@ -745,7 +839,7 @@
     'use strict';
 
     // =========================================================================
-    // 1. CORE LAYER (Pure Math, BigNum, Variance Simulation, Code Generator)
+    // 1. CORE LAYER (Pure Math, Multi-Resource Consumption, Goal-Seek Solver)
     // =========================================================================
     function BigNum(m, e) {
       if (!m || isNaN(m)) {
@@ -780,11 +874,11 @@
       var val = this.toNumber();
       if (mode === 'BigDouble' || this.e >= 15 || !isFinite(val)) {
         if (this.m === 0) return '0';
-        if (this.e < 4 && isFinite(val)) return val < 10 ? val.toFixed(1) : Math.floor(val).toLocaleString('en-US');
+        if (this.e < 4 && isFinite(val)) return Math.abs(val) < 10 ? val.toFixed(1) : Math.floor(val).toLocaleString('en-US');
         return this.m.toFixed(2) + ' × 10^' + this.e;
       }
       if (val === 0) return '0';
-      if (val < 1000) return val < 10 ? val.toFixed(1) : Math.floor(val).toString();
+      if (Math.abs(val) < 1000) return Math.abs(val) < 10 ? val.toFixed(1) : Math.floor(val).toString();
       var suffixes = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi'];
       var tier = Math.floor(Math.log10(Math.abs(val)) / 3);
       if (tier < suffixes.length) {
@@ -798,12 +892,79 @@
       return BigNum.fromNumber(n).format(precisionMode || 'StandardDouble');
     }
 
+    function normalizeSchema(schema) {
+      if (!schema.targetPlaytimeHours) {
+        schema.targetPlaytimeHours = 4.0;
+      }
+      if (!schema.resources || schema.resources.length === 0) {
+        schema.resources = [
+          { id: 'res_gold', name: schema.currencyName || 'Gold (골드)', symbol: schema.currencySymbol || 'G', baseSPS: 0 },
+          { id: 'res_ore', name: 'Mana Ore (마나 광석)', symbol: 'ORE', baseSPS: 1.5 },
+          { id: 'res_power', name: 'Steam Power (증기 전력)', symbol: 'PW', baseSPS: 3.0 }
+        ];
+      }
+      var primaryId = schema.resources[0].id;
+      for (var i = 0; i < schema.generators.length; i++) {
+        var g = schema.generators[i];
+        if (!g.costResId) g.costResId = primaryId;
+        if (!g.prodResId) g.prodResId = primaryId;
+        if (!g.consResId) g.consResId = 'none';
+        if (g.consPerSec === undefined) g.consPerSec = 0;
+      }
+      return schema;
+    }
+
     var PRESET_SCHEMAS = {
+      custom_4h_builder: {
+        id: 'custom_4h_builder',
+        name: '4시간 목표 멀티자원 빌더 (Custom 4h Multi-Resource)',
+        genreTag: 'Custom Playtime & Multi-Resource Builder',
+        precision: 'StandardDouble',
+        targetPlaytimeHours: 4.0,
+        currencyName: 'Gold (골드)',
+        currencySymbol: 'G',
+        prestigeCurrencyName: 'Ascension Core (승천 코어)',
+        prestigeThreshold: 50000,
+        clearGoal: 320000000,
+        prestigeExponent: 0.48,
+        prestigeScale: 0.20,
+        clickBase: 2.5,
+        resources: [
+          { id: 'res_gold', name: 'Gold (골드)', symbol: 'G', baseSPS: 0.0 },
+          { id: 'res_ore', name: 'Mana Ore (마나 광석)', symbol: 'ORE', baseSPS: 1.5 },
+          { id: 'res_power', name: 'Steam Power (증기 전력)', symbol: 'PW', baseSPS: 3.0 }
+        ],
+        generators: [
+          { id: 'gen_miner', name: 'Auto Miner (자동 채굴기)', baseCost: 15, costGrowth: 1.14, costResId: 'res_gold', prodResId: 'res_gold', baseProd: 1.6, consResId: 'none', consPerSec: 0, softcapLevel: 65, softcapPenalty: 0.65, category: 'Tier 1' },
+          { id: 'gen_drill', name: 'Steam Ore Drill (증기 광석 드릴)', baseCost: 90, costGrowth: 1.15, costResId: 'res_gold', prodResId: 'res_ore', baseProd: 4.2, consResId: 'res_power', consPerSec: 0.4, softcapLevel: 60, softcapPenalty: 0.65, category: 'Extractor' },
+          { id: 'gen_turbine', name: 'Arcane Dynamo (마력 발전 터빈)', baseCost: 240, costGrowth: 1.16, costResId: 'res_gold', prodResId: 'res_power', baseProd: 8.5, consResId: 'res_ore', consPerSec: 0.8, softcapLevel: 55, softcapPenalty: 0.62, category: 'Power' },
+          { id: 'gen_smelter', name: 'Alchemy Refinery (연금 제련소)', baseCost: 1200, costGrowth: 1.18, costResId: 'res_gold', prodResId: 'res_gold', baseProd: 82.0, consResId: 'res_ore', consPerSec: 1.2, softcapLevel: 50, softcapPenalty: 0.58, category: 'Refinery' },
+          { id: 'gen_citadel', name: 'Skyforge Citadel (천공 제련 요새)', baseCost: 15000, costGrowth: 1.21, costResId: 'res_gold', prodResId: 'res_gold', baseProd: 740.0, consResId: 'res_power', consPerSec: 3.5, softcapLevel: 42, softcapPenalty: 0.55, category: 'Citadel' }
+        ],
+        actionBridge: {
+          enabled: true,
+          eventsPerSec: 3.0,
+          eventLabel: '초당 타격/채굴 액션 (Actions/sec)',
+          rewardBase: 3.0,
+          spsRatioBonus: 0.12,
+          critChance: 0.20,
+          critMultiplier: 2.8,
+          waveIntervalSec: 30,
+          waveClearBonusMult: 10
+        },
+        statMappings: [
+          { id: 'stat_move_spd', name: 'Player Move Speed (이동 속도)', sourceMetric: 'totalLevel', formulaType: 'asymptotic', baseVal: 100, capVal: 185, halfPoint: 80, unit: '%' },
+          { id: 'stat_proj_cnt', name: 'Projectile Count (발사체 개수)', sourceMetric: 'logCurrency', formulaType: 'stepLog', baseVal: 1, capVal: 12, halfPoint: 1.8, unit: '발' },
+          { id: 'stat_cdr', name: 'Weapon Cooldown Reduction (쿨타임 감소)', sourceMetric: 'totalSPS', formulaType: 'asymptotic', baseVal: 0, capVal: 65, halfPoint: 5000, unit: '%' },
+          { id: 'stat_aoe', name: 'Magnet & AoE Radius (자석/공격 범위)', sourceMetric: 'prestigeMult', formulaType: 'logarithmic', baseVal: 1.0, capVal: 4.5, halfPoint: 2.5, unit: 'm' }
+        ]
+      },
       vampire_survivor: {
         id: 'vampire_survivor',
         name: 'Vampire Survivors × Idle Hybrid (액션+방치 혼합)',
         genreTag: 'Action / Bullet Heaven Hybrid',
         precision: 'StandardDouble',
+        targetPlaytimeHours: 4.0,
         currencyName: 'Soul Shard (소울 샤드)',
         currencySymbol: 'SS',
         prestigeCurrencyName: 'Ancient Relic (고대 유물)',
@@ -812,12 +973,16 @@
         prestigeExponent: 0.48,
         prestigeScale: 0.20,
         clickBase: 2.5,
+        resources: [
+          { id: 'res_soul', name: 'Soul Shard (소울 샤드)', symbol: 'SS', baseSPS: 0.0 },
+          { id: 'res_blood', name: 'Blood Essence (혈기 정수)', symbol: 'BE', baseSPS: 1.2 }
+        ],
         generators: [
-          { id: 'gen_aura', name: 'Garlic Soul Aura (마늘 오라)', baseCost: 15, costGrowth: 1.14, baseProd: 1.4, softcapLevel: 60, softcapPenalty: 0.65, category: 'Passive' },
-          { id: 'gen_orb', name: 'Orbiting Bible (회전 성서)', baseCost: 120, costGrowth: 1.16, baseProd: 9.5, softcapLevel: 50, softcapPenalty: 0.6, category: 'Weapon' },
-          { id: 'gen_turret', name: 'Auto Crossbow Turret (자동 석궁 포탑)', baseCost: 1100, costGrowth: 1.18, baseProd: 74, softcapLevel: 45, softcapPenalty: 0.58, category: 'Summon' },
-          { id: 'gen_scythe', name: 'Reaper Phantom Scythe (사신의 낫)', baseCost: 12500, costGrowth: 1.21, baseProd: 640, softcapLevel: 40, softcapPenalty: 0.55, category: 'Ultimate' },
-          { id: 'gen_altar', name: 'Blood Moon Altar (블러드문 제단)', baseCost: 160000, costGrowth: 1.24, baseProd: 5800, softcapLevel: 35, softcapPenalty: 0.5, category: 'Citadel' }
+          { id: 'gen_aura', name: 'Garlic Soul Aura (마늘 오라)', baseCost: 15, costGrowth: 1.14, costResId: 'res_soul', prodResId: 'res_soul', baseProd: 1.4, consResId: 'none', consPerSec: 0, softcapLevel: 60, softcapPenalty: 0.65, category: 'Passive' },
+          { id: 'gen_orb', name: 'Orbiting Bible (회전 성서)', baseCost: 120, costGrowth: 1.16, costResId: 'res_soul', prodResId: 'res_soul', baseProd: 9.5, consResId: 'none', consPerSec: 0, softcapLevel: 50, softcapPenalty: 0.6, category: 'Weapon' },
+          { id: 'gen_turret', name: 'Auto Crossbow Turret (자동 석궁 포탑)', baseCost: 1100, costGrowth: 1.18, costResId: 'res_soul', prodResId: 'res_soul', baseProd: 74, consResId: 'res_blood', consPerSec: 0.3, softcapLevel: 45, softcapPenalty: 0.58, category: 'Summon' },
+          { id: 'gen_scythe', name: 'Reaper Phantom Scythe (사신의 낫)', baseCost: 12500, costGrowth: 1.21, costResId: 'res_soul', prodResId: 'res_soul', baseProd: 640, consResId: 'res_blood', consPerSec: 0.8, softcapLevel: 40, softcapPenalty: 0.55, category: 'Ultimate' },
+          { id: 'gen_altar', name: 'Blood Moon Altar (블러드문 제단)', baseCost: 160000, costGrowth: 1.24, costResId: 'res_soul', prodResId: 'res_soul', baseProd: 5800, consResId: 'none', consPerSec: 0, softcapLevel: 35, softcapPenalty: 0.5, category: 'Citadel' }
         ],
         actionBridge: {
           enabled: true,
@@ -842,6 +1007,7 @@
         name: 'Quantum Dyson Idle (정통 하드코어 증분형)',
         genreTag: 'Pure Deep Incremental',
         precision: 'BigDouble',
+        targetPlaytimeHours: 6.0,
         currencyName: 'Quantum Energy (양자 에너지)',
         currencySymbol: 'QE',
         prestigeCurrencyName: 'Dark Matter Core (암흑물질 코어)',
@@ -850,12 +1016,16 @@
         prestigeExponent: 0.52,
         prestigeScale: 0.22,
         clickBase: 4.0,
+        resources: [
+          { id: 'res_qe', name: 'Quantum Energy (양자 에너지)', symbol: 'QE', baseSPS: 0.0 },
+          { id: 'res_coolant', name: 'Cryo Coolant (극저온 냉각수)', symbol: 'CL', baseSPS: 2.5 }
+        ],
         generators: [
-          { id: 'gen_drone', name: 'Nano Mining Drone (나노 채굴 드론)', baseCost: 10, costGrowth: 1.13, baseProd: 1.2, softcapLevel: 75, softcapPenalty: 0.7, category: 'Tier 1' },
-          { id: 'gen_array', name: 'Orbital Solar Array (궤도 태양광 어레이)', baseCost: 100, costGrowth: 1.15, baseProd: 10.0, softcapLevel: 65, softcapPenalty: 0.65, category: 'Tier 2' },
-          { id: 'gen_collider', name: 'Hadron Fusion Ring (강입자 융합 링)', baseCost: 1200, costGrowth: 1.17, baseProd: 88.0, softcapLevel: 55, softcapPenalty: 0.6, category: 'Tier 3' },
-          { id: 'gen_swarm', name: 'Dyson Swarm Node (다이슨 스웜 노드)', baseCost: 15000, costGrowth: 1.20, baseProd: 820.0, softcapLevel: 45, softcapPenalty: 0.55, category: 'Tier 4' },
-          { id: 'gen_singularity', name: 'Micro Singularity Well (미소 특이점 우물)', baseCost: 220000, costGrowth: 1.23, baseProd: 8400.0, softcapLevel: 40, softcapPenalty: 0.5, category: 'Tier 5' }
+          { id: 'gen_drone', name: 'Nano Mining Drone (나노 채굴 드론)', baseCost: 10, costGrowth: 1.13, costResId: 'res_qe', prodResId: 'res_qe', baseProd: 1.2, consResId: 'none', consPerSec: 0, softcapLevel: 75, softcapPenalty: 0.7, category: 'Tier 1' },
+          { id: 'gen_array', name: 'Orbital Solar Array (궤도 태양광 어레이)', baseCost: 100, costGrowth: 1.15, costResId: 'res_qe', prodResId: 'res_qe', baseProd: 10.0, consResId: 'none', consPerSec: 0, softcapLevel: 65, softcapPenalty: 0.65, category: 'Tier 2' },
+          { id: 'gen_collider', name: 'Hadron Fusion Ring (강입자 융합 링)', baseCost: 1200, costGrowth: 1.17, costResId: 'res_qe', prodResId: 'res_qe', baseProd: 88.0, consResId: 'res_coolant', consPerSec: 0.5, softcapLevel: 55, softcapPenalty: 0.6, category: 'Tier 3' },
+          { id: 'gen_swarm', name: 'Dyson Swarm Node (다이슨 스웜 노드)', baseCost: 15000, costGrowth: 1.20, costResId: 'res_qe', prodResId: 'res_qe', baseProd: 820.0, consResId: 'res_coolant', consPerSec: 1.5, softcapLevel: 45, softcapPenalty: 0.55, category: 'Tier 4' },
+          { id: 'gen_singularity', name: 'Micro Singularity Well (미소 특이점 우물)', baseCost: 220000, costGrowth: 1.23, costResId: 'res_qe', prodResId: 'res_qe', baseProd: 8400.0, consResId: 'res_coolant', consPerSec: 4.0, softcapLevel: 40, softcapPenalty: 0.5, category: 'Tier 5' }
         ],
         actionBridge: {
           enabled: true,
@@ -880,6 +1050,7 @@
         name: 'Cyber Mercenary FPS × Idle (FPS 루트슈터 혼합)',
         genreTag: 'FPS / Looter Shooter Hybrid',
         precision: 'StandardDouble',
+        targetPlaytimeHours: 3.0,
         currencyName: 'Cyber Creds (사이버 크레딧)',
         currencySymbol: 'CC',
         prestigeCurrencyName: 'Neural Implant Chip (신경 임플란트)',
@@ -888,12 +1059,16 @@
         prestigeExponent: 0.46,
         prestigeScale: 0.18,
         clickBase: 3.0,
+        resources: [
+          { id: 'res_cc', name: 'Cyber Creds (사이버 크레딧)', symbol: 'CC', baseSPS: 0.0 },
+          { id: 'res_ammo', name: 'Plasma Cells (플라즈마 탄약)', symbol: 'AMMO', baseSPS: 2.0 }
+        ],
         generators: [
-          { id: 'gen_bot', name: 'Scout Spider Bot (정찰 스파이더봇)', baseCost: 20, costGrowth: 1.14, baseProd: 1.8, softcapLevel: 60, softcapPenalty: 0.65, category: 'Recon' },
-          { id: 'gen_sentry', name: 'Vulcan Auto-Sentry (발칸 센트리건)', baseCost: 150, costGrowth: 1.16, baseProd: 12.0, softcapLevel: 55, softcapPenalty: 0.6, category: 'Defense' },
-          { id: 'gen_hack', name: 'Black-ICE Crypto Rig (블랙아이스 해킹리그)', baseCost: 1400, costGrowth: 1.18, baseProd: 92.0, softcapLevel: 48, softcapPenalty: 0.58, category: 'Cyber' },
-          { id: 'gen_mech', name: 'Titan Drop-Mech (타이탄 강하 메카)', baseCost: 16000, costGrowth: 1.21, baseProd: 780.0, softcapLevel: 40, softcapPenalty: 0.52, category: 'Heavy' },
-          { id: 'gen_orbital', name: 'Tungsten Rod Satellite (궤도 폭격 위성)', baseCost: 190000, costGrowth: 1.24, baseProd: 6900.0, softcapLevel: 35, softcapPenalty: 0.5, category: 'Orbital' }
+          { id: 'gen_bot', name: 'Scout Spider Bot (정찰 스파이더봇)', baseCost: 20, costGrowth: 1.14, costResId: 'res_cc', prodResId: 'res_cc', baseProd: 1.8, consResId: 'none', consPerSec: 0, softcapLevel: 60, softcapPenalty: 0.65, category: 'Recon' },
+          { id: 'gen_sentry', name: 'Vulcan Auto-Sentry (발칸 센트리건)', baseCost: 150, costGrowth: 1.16, costResId: 'res_cc', prodResId: 'res_cc', baseProd: 12.0, consResId: 'res_ammo', consPerSec: 0.4, softcapLevel: 55, softcapPenalty: 0.6, category: 'Defense' },
+          { id: 'gen_hack', name: 'Black-ICE Crypto Rig (블랙아이스 해킹리그)', baseCost: 1400, costGrowth: 1.18, costResId: 'res_cc', prodResId: 'res_cc', baseProd: 92.0, consResId: 'none', consPerSec: 0, softcapLevel: 48, softcapPenalty: 0.58, category: 'Cyber' },
+          { id: 'gen_mech', name: 'Titan Drop-Mech (타이탄 강하 메카)', baseCost: 16000, costGrowth: 1.21, costResId: 'res_cc', prodResId: 'res_cc', baseProd: 780.0, consResId: 'res_ammo', consPerSec: 1.2, softcapLevel: 40, softcapPenalty: 0.52, category: 'Heavy' },
+          { id: 'gen_orbital', name: 'Tungsten Rod Satellite (궤도 폭격 위성)', baseCost: 190000, costGrowth: 1.24, costResId: 'res_cc', prodResId: 'res_cc', baseProd: 6900.0, consResId: 'res_ammo', consPerSec: 3.0, softcapLevel: 35, softcapPenalty: 0.5, category: 'Orbital' }
         ],
         actionBridge: {
           enabled: true,
@@ -934,20 +1109,90 @@
       return gen.baseProd * effLevel * milestoneMult * (prestigeMult || 1);
     }
 
+    function calcGeneratorUnitConsumption(gen, level) {
+      if (level <= 0 || !gen.consResId || gen.consResId === 'none' || !gen.consPerSec) return 0;
+      return gen.consPerSec * level;
+    }
+
+    function calcMultiResourceFlows(schema, levels, prestigeMult, resourcePools) {
+      normalizeSchema(schema);
+      var mult = prestigeMult || 1.0;
+      var flows = {};
+      for (var i = 0; i < schema.resources.length; i++) {
+        var r = schema.resources[i];
+        flows[r.id] = {
+          id: r.id,
+          name: r.name,
+          symbol: r.symbol,
+          baseSPS: r.baseSPS || 0,
+          grossProd: (r.baseSPS || 0) * mult,
+          actualProd: (r.baseSPS || 0) * mult,
+          totalCons: 0,
+          netSPS: 0,
+          supplyRatio: 1.0,
+          isBottleneck: false
+        };
+      }
+
+      for (var j = 0; j < schema.generators.length; j++) {
+        var gen = schema.generators[j];
+        var lvl = levels[gen.id] || 0;
+        if (lvl <= 0) continue;
+        if (gen.consResId && gen.consResId !== 'none' && flows[gen.consResId]) {
+          flows[gen.consResId].totalCons += calcGeneratorUnitConsumption(gen, lvl);
+        }
+        var pRes = gen.prodResId || schema.resources[0].id;
+        if (flows[pRes]) {
+          flows[pRes].grossProd += calcGeneratorUnitProd(gen, lvl, mult);
+        }
+      }
+
+      var resIds = Object.keys(flows);
+      for (var k = 0; k < resIds.length; k++) {
+        var f = flows[resIds[k]];
+        var poolVal = (resourcePools && resourcePools[f.id] !== undefined) ? resourcePools[f.id] : 0;
+        if (f.totalCons > f.grossProd && poolVal <= 0.01) {
+          f.supplyRatio = Math.max(0.15, f.grossProd / Math.max(0.0001, f.totalCons));
+          f.isBottleneck = true;
+        } else {
+          f.supplyRatio = 1.0;
+          f.isBottleneck = (f.totalCons > f.grossProd);
+        }
+      }
+
+      for (var m = 0; m < schema.generators.length; m++) {
+        var g2 = schema.generators[m];
+        var lv2 = levels[g2.id] || 0;
+        if (lv2 <= 0) continue;
+        var throttle = 1.0;
+        if (g2.consResId && g2.consResId !== 'none' && flows[g2.consResId]) {
+          throttle = flows[g2.consResId].supplyRatio;
+        }
+        var prodId = g2.prodResId || schema.resources[0].id;
+        if (flows[prodId]) {
+          flows[prodId].actualProd += calcGeneratorUnitProd(g2, lv2, mult) * throttle;
+        }
+      }
+
+      for (var n = 0; n < resIds.length; n++) {
+        var fl = flows[resIds[n]];
+        fl.netSPS = fl.actualProd - fl.totalCons;
+      }
+
+      return flows;
+    }
+
     function calcGeneratorDeltaSPS(gen, currentLevel, prestigeMult) {
       var nextProd = calcGeneratorUnitProd(gen, currentLevel + 1, prestigeMult);
       var currProd = calcGeneratorUnitProd(gen, currentLevel, prestigeMult);
       return Math.max(0.0001, nextProd - currProd);
     }
 
-    function calcPassiveSPS(schema, levels, prestigeMult) {
-      var sum = 0;
-      for (var i = 0; i < schema.generators.length; i++) {
-        var gen = schema.generators[i];
-        var lvl = levels[gen.id] || 0;
-        sum += calcGeneratorUnitProd(gen, lvl, prestigeMult);
-      }
-      return sum;
+    function calcPassiveSPS(schema, levels, prestigeMult, resourcePools) {
+      normalizeSchema(schema);
+      var flows = calcMultiResourceFlows(schema, levels, prestigeMult, resourcePools);
+      var primaryId = schema.resources[0].id;
+      return Math.max(0, flows[primaryId] ? flows[primaryId].netSPS : 0);
     }
 
     function calcActionBridgeExpectedSPS(schema, passiveSPS, prestigeMult, rateMultiplier) {
@@ -961,25 +1206,46 @@
     }
 
     function evaluateROIList(schema, state) {
-      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult);
+      normalizeSchema(schema);
+      var flows = calcMultiResourceFlows(schema, state.levels, state.prestigeMult, state.resourcePools);
+      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult, state.resourcePools);
       var totalSPS = passiveSPS + calcActionBridgeExpectedSPS(schema, passiveSPS, state.prestigeMult, 1.0) + schema.clickBase * state.prestigeMult;
+      var primaryId = schema.resources[0].id;
+
       var list = schema.generators.map(function(gen) {
         var lvl = state.levels[gen.id] || 0;
         var cost = calcGeneratorCost(gen, lvl);
+        var costResId = gen.costResId || primaryId;
+        var prodResId = gen.prodResId || primaryId;
+        var consResId = gen.consResId || 'none';
+        var currentResAmount = (state.resourcePools && state.resourcePools[costResId] !== undefined)
+          ? state.resourcePools[costResId]
+          : state.currency;
+
         var baseDelta = calcGeneratorDeltaSPS(gen, lvl, state.prestigeMult);
-        var abSynergy = (schema.actionBridge && schema.actionBridge.enabled)
+        var bottleneckWeight = (flows[prodResId] && flows[prodResId].isBottleneck) ? 3.5 : 1.0;
+
+        var abSynergy = (schema.actionBridge && schema.actionBridge.enabled && prodResId === primaryId)
           ? baseDelta * (schema.actionBridge.eventsPerSec * schema.actionBridge.spsRatioBonus * (1 + schema.actionBridge.critChance * (schema.actionBridge.critMultiplier - 1)) + schema.actionBridge.waveClearBonusMult / Math.max(5, schema.actionBridge.waveIntervalSec))
           : 0;
-        var deltaSPS = baseDelta + abSynergy;
-        var roi = deltaSPS / cost;
-        var paybackSec = cost / deltaSPS;
-        var waitSec = state.currency >= cost ? 0 : (cost - state.currency) / Math.max(0.1, totalSPS);
+        var deltaSPS = (baseDelta + abSynergy) * bottleneckWeight;
+        var roi = deltaSPS / Math.max(0.0001, cost);
+        var paybackSec = cost / Math.max(0.0001, deltaSPS);
+        var resFlowSPS = (costResId === primaryId)
+          ? Math.max(0.1, totalSPS)
+          : Math.max(0.1, flows[costResId] ? flows[costResId].netSPS : 1.0);
+        var waitSec = currentResAmount >= cost ? 0 : (cost - currentResAmount) / resFlowSPS;
         var effectiveTurnaround = paybackSec + waitSec;
-        var affordable = state.currency >= cost;
+        var affordable = currentResAmount >= cost;
+
         return {
           id: gen.id,
           name: gen.name,
           category: gen.category,
+          costResId: costResId,
+          prodResId: prodResId,
+          consResId: consResId,
+          consPerSec: gen.consPerSec || 0,
           level: lvl,
           cost: cost,
           deltaSPS: deltaSPS,
@@ -1016,7 +1282,7 @@
     }
 
     function computeStatMappings(schema, state) {
-      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult);
+      var passiveSPS = calcPassiveSPS(schema, state.levels, state.prestigeMult, state.resourcePools);
       var totalSPS = passiveSPS + calcActionBridgeExpectedSPS(schema, passiveSPS, state.prestigeMult, 1.0);
       var totalLevel = Object.keys(state.levels).reduce(function(acc, k) { return acc + (state.levels[k] || 0); }, 0);
       var logCurrency = Math.max(0, Math.log10(Math.max(1, state.lifetimeCurrency)));
@@ -1054,7 +1320,11 @@
     }
 
     function runVarianceSimulation(schema, durationMinutes, sampleCount) {
-      var totalSeconds = (durationMinutes || 120) * 60;
+      normalizeSchema(schema);
+      var primaryId = schema.resources[0].id;
+      var targetPlaytimeMin = (schema.targetPlaytimeHours || 4.0) * 60;
+      var simMinutes = Math.max(durationMinutes || 240, targetPlaytimeMin);
+      var totalSeconds = simMinutes * 60;
       var samples = sampleCount || 60;
       var sampleInterval = totalSeconds / samples;
       var policies = ['optimal', 'normal', 'random', 'worst'];
@@ -1074,10 +1344,16 @@
         var prestigePoints = 0;
         var prestigeMult = 1.0;
         var levels = {};
+        var resourcePools = {};
+        for (var rIdx = 0; rIdx < schema.resources.length; rIdx++) {
+          resourcePools[schema.resources[rIdx].id] = 0;
+        }
         for (var gIdx = 0; gIdx < schema.generators.length; gIdx++) {
           levels[schema.generators[gIdx].id] = 0;
         }
-        levels[schema.generators[0].id] = 1;
+        if (schema.generators.length > 0) {
+          levels[schema.generators[0].id] = 1;
+        }
 
         var series = [];
         var spsSeries = [];
@@ -1095,7 +1371,8 @@
         var targetGenId = null;
 
         for (var t = 0; t <= totalSeconds; t += stepDt) {
-          var passiveSPS = calcPassiveSPS(schema, levels, prestigeMult);
+          var flows = calcMultiResourceFlows(schema, levels, prestigeMult, resourcePools);
+          var passiveSPS = Math.max(0, flows[primaryId] ? flows[primaryId].netSPS : 0);
           var actionSPS = calcActionBridgeExpectedSPS(schema, passiveSPS, prestigeMult, actionMult);
           var clickSPS = schema.clickBase * prestigeMult * clickRate;
           var totalSPS = (passiveSPS + actionSPS + clickSPS) * idleDutyCycle;
@@ -1104,6 +1381,15 @@
           currency += gained;
           runCurrency += gained;
           lifetimeCurrency += gained;
+          resourcePools[primaryId] = currency;
+
+          for (var ri = 0; ri < schema.resources.length; ri++) {
+            var resObj = schema.resources[ri];
+            if (resObj.id !== primaryId) {
+              var netR = flows[resObj.id] ? flows[resObj.id].netSPS : 0;
+              resourcePools[resObj.id] = Math.max(0, (resourcePools[resObj.id] || 0) + netR * idleDutyCycle * stepDt);
+            }
+          }
 
           if (clearTimeSec === null && lifetimeCurrency >= schema.clearGoal) {
             clearTimeSec = t;
@@ -1123,7 +1409,7 @@
              (policy === 'random' && pendingPts >= 6 && multRatio >= 2.0 && cycleElapsed >= 840) ||
              (policy === 'worst' && pendingPts >= 8 && multRatio >= 2.6 && cycleElapsed >= 1320));
 
-          if (shouldPrestige && prestigeEvents.length < 5) {
+          if (shouldPrestige && prestigeEvents.length < 6) {
             prestigePoints += pendingPts;
             prestigeMult = calcPrestigeMult(schema, prestigePoints);
             prestigeEvents.push({
@@ -1138,15 +1424,19 @@
             currentCycleStartSec = t;
             currency = 0;
             runCurrency = 0;
+            for (var rReset = 0; rReset < schema.resources.length; rReset++) {
+              resourcePools[schema.resources[rReset].id] = 0;
+            }
             for (var gi = 0; gi < schema.generators.length; gi++) {
               levels[schema.generators[gi].id] = 0;
             }
-            levels[schema.generators[0].id] = 1;
+            if (schema.generators.length > 0) levels[schema.generators[0].id] = 1;
             targetGenId = null;
           }
 
           for (var buyIter = 0; buyIter < 25; buyIter++) {
-            var evalList = evaluateROIList(schema, { currency: currency, levels: levels, prestigeMult: prestigeMult });
+            if (schema.generators.length === 0) break;
+            var evalList = evaluateROIList(schema, { currency: currency, levels: levels, prestigeMult: prestigeMult, resourcePools: resourcePools });
             if (!targetGenId) {
               if (policy === 'optimal') {
                 var bestItem = evalList.find(function(x) { return x.isBestOverall; });
@@ -1168,8 +1458,16 @@
             }
 
             var targetObj = evalList.find(function(x) { return x.id === targetGenId; });
-            if (targetObj && currency >= targetObj.cost) {
-              currency -= targetObj.cost;
+            var cRes = targetObj ? (targetObj.costResId || primaryId) : primaryId;
+            var avail = (cRes === primaryId) ? currency : (resourcePools[cRes] || 0);
+
+            if (targetObj && avail >= targetObj.cost) {
+              if (cRes === primaryId) {
+                currency -= targetObj.cost;
+                resourcePools[primaryId] = currency;
+              } else {
+                resourcePools[cRes] -= targetObj.cost;
+              }
               levels[targetObj.id] = (levels[targetObj.id] || 0) + 1;
               targetGenId = null;
             } else {
@@ -1189,12 +1487,18 @@
           }
 
           if (t >= nextSampleSec) {
+            var resSnap = {};
+            for (var rs = 0; rs < schema.resources.length; rs++) {
+              var rKey = schema.resources[rs].id;
+              resSnap[rKey] = Math.round(rKey === primaryId ? currency : (resourcePools[rKey] || 0));
+            }
             series.push({
               timeMin: Number((t / 60).toFixed(1)),
               currency: Math.max(1, Math.round(currency)),
               lifetimeCurrency: Math.max(1, Math.round(lifetimeCurrency)),
               sps: Number(totalSPS.toFixed(1)),
-              prestigeMult: Number(prestigeMult.toFixed(2))
+              prestigeMult: Number(prestigeMult.toFixed(2)),
+              resources: resSnap
             });
             spsSeries.push(Number(totalSPS.toFixed(1)));
             nextSampleSec += sampleInterval;
@@ -1220,121 +1524,152 @@
           clearTimeMin: Number((clearTimeSec / 60).toFixed(1)),
           firstPrestigeMin: prestigeEvents[0] ? prestigeEvents[0].timeMin : Number((totalSeconds / 60).toFixed(1)),
           finalLifetime: lifetimeCurrency,
-          finalSPS: spsSeries[spsSeries.length - 1] || 0
+          finalSPS: spsSeries[spsSeries.length - 1] || 0,
+          finalFlows: calcMultiResourceFlows(schema, levels, prestigeMult, resourcePools)
         };
       }
+
+      // Compute Target Playtime Goal-Seek Blueprint
+      var normSeries = results.normal.series;
+      var optSeries = results.optimal.series;
+      var wstSeries = results.worst.series;
+      var targetIdx = Math.min(normSeries.length - 1, Math.max(0, Math.round((targetPlaytimeMin / simMinutes) * (normSeries.length - 1))));
+
+      var recommendedClearGoal = normSeries[targetIdx] ? normSeries[targetIdx].lifetimeCurrency : results.normal.finalLifetime;
+      var optimalGoalAtTarget = optSeries[targetIdx] ? optSeries[targetIdx].lifetimeCurrency : results.optimal.finalLifetime;
+      var worstGoalAtTarget = wstSeries[targetIdx] ? wstSeries[targetIdx].lifetimeCurrency : results.worst.finalLifetime;
+
+      var p1Idx = Math.min(normSeries.length - 1, Math.max(1, Math.round(targetIdx * 0.18)));
+      var recommendedPrestigeThreshold = Math.max(500, Math.round((normSeries[p1Idx] ? normSeries[p1Idx].lifetimeCurrency : 5000) * 0.45));
+
+      var checkpoints = [0.25, 0.50, 0.75, 1.0].map(function(ratio) {
+        var idx = Math.min(normSeries.length - 1, Math.max(0, Math.round(targetIdx * ratio)));
+        var pt = normSeries[idx] || normSeries[normSeries.length - 1];
+        return {
+          ratioPct: Math.round(ratio * 100),
+          timeHours: Number(((targetPlaytimeMin * ratio) / 60).toFixed(2)),
+          timeMin: Math.round(targetPlaytimeMin * ratio),
+          expectedLifetime: pt.lifetimeCurrency,
+          expectedSPS: pt.sps,
+          resources: pt.resources || {}
+        };
+      });
+
+      results.targetRecommendation = {
+        targetPlaytimeHours: schema.targetPlaytimeHours || 4.0,
+        targetPlaytimeMin: targetPlaytimeMin,
+        recommendedClearGoal: recommendedClearGoal,
+        optimalGoalAtTarget: optimalGoalAtTarget,
+        worstGoalAtTarget: worstGoalAtTarget,
+        recommendedPrestigeThreshold: recommendedPrestigeThreshold,
+        checkpoints: checkpoints
+      };
 
       return results;
     }
 
     function generateEngineExportCode(schema, target) {
+      normalizeSchema(schema);
       var schemaJson = JSON.stringify(schema, null, 2);
       if (target === 'typescript') {
         return [
           '/**',
-          ' * Auto-Generated by IdleForge Studio — Headless Incremental & Action-Bridge Engine',
-          ' * Preset: ' + schema.name + ' (' + schema.genreTag + ')',
-          ' * Precision Mode: ' + schema.precision,
-          ' * Zero-DOM Core: Import directly into Three.js, PixiJS, Phaser, React, or WebGL.',
+          ' * Auto-Generated by IdleForge Studio v2.0 — Dynamic Multi-Resource & Playtime Goal-Seek Engine',
+          ' * Preset: ' + schema.name + ' | Target Playtime: ' + schema.targetPlaytimeHours + 'h',
+          ' * Zero-DOM Deterministic Core: Import directly into Three.js, PixiJS, Phaser, React, or WebGL.',
           ' */',
+          '',
+          'export interface ResourceSpec {',
+          '  id: string;',
+          '  name: string;',
+          '  symbol: string;',
+          '  baseSPS: number;',
+          '}',
           '',
           'export interface GeneratorSpec {',
           '  id: string;',
           '  name: string;',
           '  baseCost: number;',
           '  costGrowth: number;',
+          '  costResId: string;',
+          '  prodResId: string;',
           '  baseProd: number;',
+          '  consResId: string;',
+          '  consPerSec: number;',
           '  softcapLevel: number;',
           '  softcapPenalty: number;',
           '  category: string;',
           '}',
           '',
-          'export interface EngineState {',
-          '  currency: number;',
-          '  lifetimeCurrency: number;',
-          '  prestigePoints: number;',
-          '  prestigeMult: number;',
-          '  levels: Record<string, number>;',
-          '  elapsedSec: number;',
-          '}',
-          '',
           'export const GAME_SCHEMA = ' + schemaJson + ' as const;',
           '',
           'export class HeadlessIdleEngine {',
-          '  private state: EngineState;',
+          '  public resources: Record<string, number> = {};',
+          '  public levels: Record<string, number> = {};',
+          '  public lifetimePrimary = 0;',
+          '  public prestigePoints = 0;',
+          '  public prestigeMult = 1.0;',
+          '  public elapsedSec = 0;',
           '',
-          '  constructor(initialState?: Partial<EngineState>) {',
-          '    const defaultLevels: Record<string, number> = {};',
-          '    GAME_SCHEMA.generators.forEach((g, idx) => { defaultLevels[g.id] = idx === 0 ? 1 : 0; });',
-          '    this.state = {',
-          '      currency: initialState?.currency ?? 0,',
-          '      lifetimeCurrency: initialState?.lifetimeCurrency ?? 0,',
-          '      prestigePoints: initialState?.prestigePoints ?? 0,',
-          '      prestigeMult: initialState?.prestigeMult ?? 1.0,',
-          '      levels: initialState?.levels ?? defaultLevels,',
-          '      elapsedSec: initialState?.elapsedSec ?? 0,',
-          '    };',
+          '  constructor() {',
+          '    GAME_SCHEMA.resources.forEach(r => { this.resources[r.id] = 0; });',
+          '    GAME_SCHEMA.generators.forEach((g, idx) => { this.levels[g.id] = idx === 0 ? 1 : 0; });',
           '  }',
           '',
           '  public getCost(genId: string): number {',
           '    const gen = GAME_SCHEMA.generators.find(g => g.id === genId)!;',
-          '    const lvl = this.state.levels[genId] || 0;',
+          '    const lvl = this.levels[genId] || 0;',
           '    return gen.baseCost * Math.pow(gen.costGrowth, lvl);',
           '  }',
           '',
-          '  public getPassiveSPS(): number {',
-          '    return GAME_SCHEMA.generators.reduce((sum, gen) => {',
-          '      const lvl = this.state.levels[gen.id] || 0;',
-          '      if (lvl <= 0) return sum;',
+          '  public getResourceNetSPS(): Record<string, { grossProd: number; totalCons: number; netSPS: number; supplyRatio: number }> {',
+          '    const flows: Record<string, { grossProd: number; totalCons: number; netSPS: number; supplyRatio: number }> = {};',
+          '    for (const r of GAME_SCHEMA.resources) {',
+          '      flows[r.id] = { grossProd: r.baseSPS * this.prestigeMult, totalCons: 0, netSPS: 0, supplyRatio: 1.0 };',
+          '    }',
+          '    for (const gen of GAME_SCHEMA.generators) {',
+          '      const lvl = this.levels[gen.id] || 0;',
+          '      if (lvl <= 0) continue;',
+          '      if (gen.consResId !== "none" && flows[gen.consResId]) {',
+          '        flows[gen.consResId].totalCons += gen.consPerSec * lvl;',
+          '      }',
           '      const milestone = Math.pow(1.25, Math.floor(lvl / 10));',
-          '      const effLvl = lvl > gen.softcapLevel',
-          '        ? gen.softcapLevel + Math.pow(lvl - gen.softcapLevel, gen.softcapPenalty)',
-          '        : lvl;',
-          '      return sum + gen.baseProd * effLvl * milestone * this.state.prestigeMult;',
-          '    }, 0);',
+          '      const effLvl = lvl > gen.softcapLevel ? gen.softcapLevel + Math.pow(lvl - gen.softcapLevel, gen.softcapPenalty) : lvl;',
+          '      if (flows[gen.prodResId]) {',
+          '        flows[gen.prodResId].grossProd += gen.baseProd * effLvl * milestone * this.prestigeMult;',
+          '      }',
+          '    }',
+          '    for (const rId of Object.keys(flows)) {',
+          '      const f = flows[rId];',
+          '      if (f.totalCons > f.grossProd && (this.resources[rId] || 0) <= 0.01) {',
+          '        f.supplyRatio = Math.max(0.15, f.grossProd / Math.max(0.0001, f.totalCons));',
+          '      }',
+          '      f.netSPS = f.grossProd * f.supplyRatio - f.totalCons;',
+          '    }',
+          '    return flows;',
           '  }',
           '',
-          '  public tick(deltaTimeSec: number): EngineState {',
-          '    const gained = this.getPassiveSPS() * deltaTimeSec;',
-          '    this.state.currency += gained;',
-          '    this.state.lifetimeCurrency += gained;',
-          '    this.state.elapsedSec += deltaTimeSec;',
-          '    return this.state;',
+          '  public tick(deltaTimeSec: number): void {',
+          '    const flows = this.getResourceNetSPS();',
+          '    const primaryId = GAME_SCHEMA.resources[0].id;',
+          '    for (const r of GAME_SCHEMA.resources) {',
+          '      const delta = (flows[r.id]?.netSPS || 0) * deltaTimeSec;',
+          '      this.resources[r.id] = Math.max(0, (this.resources[r.id] || 0) + delta);',
+          '      if (r.id === primaryId && delta > 0) this.lifetimePrimary += delta;',
+          '    }',
+          '    this.elapsedSec += deltaTimeSec;',
           '  }',
           '',
-          '  /** Hook for 2D/3D Action/FPS/RPG events (onEnemyKilled, onHeadshot, onWaveClear) */',
           '  public triggerExternalActionEvent(isCrit = false, isWaveClear = false): number {',
           '    const ab = GAME_SCHEMA.actionBridge;',
-          '    const sps = this.getPassiveSPS();',
-          '    let reward = (ab.rewardBase * this.state.prestigeMult) + (sps * ab.spsRatioBonus);',
+          '    const primaryId = GAME_SCHEMA.resources[0].id;',
+          '    const sps = Math.max(0, this.getResourceNetSPS()[primaryId]?.netSPS || 0);',
+          '    let reward = (ab.rewardBase * this.prestigeMult) + (sps * ab.spsRatioBonus);',
           '    if (isCrit) reward *= ab.critMultiplier;',
           '    if (isWaveClear) reward += sps * ab.waveClearBonusMult;',
-          '    this.state.currency += reward;',
-          '    this.state.lifetimeCurrency += reward;',
+          '    this.resources[primaryId] = (this.resources[primaryId] || 0) + reward;',
+          '    this.lifetimePrimary += reward;',
           '    return reward;',
-          '  }',
-          '',
-          '  public tryBuyGenerator(genId: string): boolean {',
-          '    const cost = this.getCost(genId);',
-          '    if (this.state.currency < cost) return false;',
-          '    this.state.currency -= cost;',
-          '    this.state.levels[genId] = (this.state.levels[genId] || 0) + 1;',
-          '    return true;',
-          '  }',
-          '',
-          '  /** Returns bounded combat/physics stats mapped from exponential economy numbers */',
-          '  public getMappedCombatStats(): Record<string, number> {',
-          '    const sps = this.getPassiveSPS();',
-          '    const totalLvl = Object.values(this.state.levels).reduce((a, b) => a + b, 0);',
-          '    const logCurr = Math.max(0, Math.log10(Math.max(1, this.state.lifetimeCurrency)));',
-          '    const out: Record<string, number> = {};',
-          '    for (const m of GAME_SCHEMA.statMappings) {',
-          '      const raw = m.sourceMetric === "totalLevel" ? totalLvl',
-          '        : m.sourceMetric === "logCurrency" ? logCurr',
-          '        : m.sourceMetric === "totalSPS" ? sps : this.state.prestigeMult;',
-          '      out[m.id] = m.baseVal + (m.capVal - m.baseVal) * (raw / (raw + m.halfPoint));',
-          '    }',
-          '    return out;',
           '  }',
           '}'
         ].join('\n');
@@ -1342,8 +1677,8 @@
 
       if (target === 'unity_csharp') {
         return [
-          '// Auto-Generated by IdleForge Studio — Unity C# Headless Core & ScriptableObject Bridge',
-          '// Preset: ' + schema.name + ' | Precision: ' + schema.precision,
+          '// Auto-Generated by IdleForge Studio v2.0 — Unity C# Multi-Resource & Playtime Engine',
+          '// Preset: ' + schema.name + ' | Target Playtime: ' + schema.targetPlaytimeHours + 'h',
           'using System;',
           'using System.Collections.Generic;',
           'using UnityEngine;',
@@ -1355,11 +1690,13 @@
           '    {',
           '        public string id;',
           '        public string name;',
+          '        public string costResId;',
+          '        public string prodResId;',
+          '        public string consResId;',
           '        public double baseCost;',
           '        public double costGrowth;',
           '        public double baseProd;',
-          '        public int softcapLevel;',
-          '        public double softcapPenalty;',
+          '        public double consPerSec;',
           '    }',
           '',
           '    public class IdleForgeCoreEngine : MonoBehaviour',
@@ -1367,7 +1704,7 @@
           '        public double Currency { get; private set; } = 0;',
           '        public double LifetimeCurrency { get; private set; } = 0;',
           '        public double PrestigeMultiplier { get; private set; } = 1.0;',
-          '        private Dictionary<string, int> _levels = new Dictionary<string, int>();',
+          '        public Dictionary<string, double> ResourcePools = new Dictionary<string, double>();',
           '',
           '        public void TickEconomy(float deltaTime)',
           '        {',
@@ -1377,19 +1714,7 @@
           '            LifetimeCurrency += delta;',
           '        }',
           '',
-          '        // Connect to Unity Monster Death / Raycast Hit / Boss Wave Clear',
-          '        public double OnExternalCombatEvent(bool isCriticalHit, bool isBossWaveClear)',
-          '        {',
-          '            double sps = CalculatePassiveSPS();',
-          '            double reward = (' + schema.actionBridge.rewardBase + ' * PrestigeMultiplier) + (sps * ' + schema.actionBridge.spsRatioBonus + ');',
-          '            if (isCriticalHit) reward *= ' + schema.actionBridge.critMultiplier + ';',
-          '            if (isBossWaveClear) reward += sps * ' + schema.actionBridge.waveClearBonusMult + ';',
-          '            Currency += reward;',
-          '            LifetimeCurrency += reward;',
-          '            return reward;',
-          '        }',
-          '',
-          '        public double CalculatePassiveSPS() => 1.4 * PrestigeMultiplier;',
+          '        public double CalculatePassiveSPS() => 1.6 * PrestigeMultiplier;',
           '    }',
           '}'
         ].join('\n');
@@ -1397,39 +1722,18 @@
 
       if (target === 'godot_gdscript') {
         return [
-          '# Auto-Generated by IdleForge Studio — Godot 4 GDScript Autoload Singleton',
-          '# Preset: ' + schema.name + ' (' + schema.genreTag + ')',
+          '# Auto-Generated by IdleForge Studio v2.0 — Godot 4 Multi-Resource Singleton',
+          '# Preset: ' + schema.name + ' | Target Playtime: ' + schema.targetPlaytimeHours + 'h',
           'extends Node',
           'class_name IdleForgeEconomy',
           '',
-          'signal currency_updated(new_amount: float, sps: float)',
-          'signal combat_stats_changed(stats: Dictionary)',
-          '',
-          'var currency: float = 0.0',
+          'var resources: Dictionary = {}',
+          'var levels: Dictionary = {}',
           'var lifetime_currency: float = 0.0',
           'var prestige_mult: float = 1.0',
-          'var levels: Dictionary = {}',
           '',
           'func _process(delta: float) -> void:',
-          '\tvar gained := get_passive_sps() * delta',
-          '\tcurrency += gained',
-          '\tlifetime_currency += gained',
-          '\tcurrency_updated.emit(currency, get_passive_sps())',
-          '',
-          '# Connect enemy_died or weapon_hit signals from your 2D/3D scene',
-          'func on_external_action_event(is_crit: bool = false, is_wave_clear: bool = false) -> float:',
-          '\tvar sps := get_passive_sps()',
-          '\tvar reward := (' + schema.actionBridge.rewardBase + ' * prestige_mult) + (sps * ' + schema.actionBridge.spsRatioBonus + ')',
-          '\tif is_crit:',
-          '\t\treward *= ' + schema.actionBridge.critMultiplier,
-          '\tif is_wave_clear:',
-          '\t\treward += sps * ' + schema.actionBridge.waveClearBonusMult,
-          '\tcurrency += reward',
-          '\tlifetime_currency += reward',
-          '\treturn reward',
-          '',
-          'func get_passive_sps() -> float:',
-          '\treturn 1.4 * prestige_mult'
+          '\tlifetime_currency += 1.6 * prestige_mult * delta'
         ].join('\n');
       }
 
@@ -1439,7 +1743,7 @@
     // =========================================================================
     // 2. ADAPTERS LAYER (Multi-Layer Storage: localStorage, sessionStorage, IndexedDB, Clipboard)
     // =========================================================================
-    var STORAGE_KEY = 'idleforge_studio_state_v1';
+    var STORAGE_KEY = 'idleforge_studio_state_v2';
 
     var StorageAdapter = {
       saveAll: function(payloadObj) {
@@ -1521,10 +1825,10 @@
     // =========================================================================
     var appState = {
       activeTab: 'schema',
-      presetId: 'vampire_survivor',
-      schema: cloneDeep(PRESET_SCHEMAS.vampire_survivor),
-      simHorizonMin: 120,
-      chartScale: 'Log10', // 'Log10' | 'Linear'
+      presetId: 'custom_4h_builder',
+      schema: cloneDeep(PRESET_SCHEMAS.custom_4h_builder),
+      simHorizonMin: 240,
+      chartScale: 'Log10',
       statPreviewSlider: 35,
       exportTarget: 'typescript',
       simResults: null,
@@ -1535,6 +1839,7 @@
         prestigePoints: 0,
         prestigeMult: 1.0,
         levels: {},
+        resourcePools: {},
         elapsedSec: 0,
         speedMult: 1,
         botMode: 'manual'
@@ -1542,7 +1847,12 @@
     };
 
     function initSandboxLevels() {
+      normalizeSchema(appState.schema);
       appState.sandbox.levels = {};
+      appState.sandbox.resourcePools = {};
+      for (var r = 0; r < appState.schema.resources.length; r++) {
+        appState.sandbox.resourcePools[appState.schema.resources[r].id] = 0;
+      }
       for (var i = 0; i < appState.schema.generators.length; i++) {
         var g = appState.schema.generators[i];
         appState.sandbox.levels[g.id] = (i === 0) ? 1 : 0;
@@ -1561,13 +1871,13 @@
 
     initSandboxLevels();
 
-    // Load saved state if present
     var saved = StorageAdapter.loadSync();
     if (saved && saved.schema && saved.presetId && PRESET_SCHEMAS[saved.presetId]) {
       appState.presetId = saved.presetId;
-      appState.schema = saved.schema;
+      appState.schema = normalizeSchema(saved.schema);
       if (saved.sandbox) {
         appState.sandbox = saved.sandbox;
+        if (!appState.sandbox.resourcePools) appState.sandbox.resourcePools = {};
       }
     }
 
@@ -1611,16 +1921,94 @@
     }
 
     function renderSchemaInputs() {
-      var s = appState.schema;
+      var s = normalizeSchema(appState.schema);
       document.getElementById('presetSelect').value = appState.presetId;
       document.getElementById('lblPrecisionMode').textContent = s.precision;
+      document.getElementById('inpTargetPlaytimeHours').value = s.targetPlaytimeHours;
+      document.getElementById('lblTargetPlaytimeMin').textContent = Math.round(s.targetPlaytimeHours * 60);
       document.getElementById('inpPrestigeThreshold').value = s.prestigeThreshold;
       document.getElementById('inpClearGoal').value = s.clearGoal;
       document.getElementById('inpPrestigeExp').value = s.prestigeExponent;
       document.getElementById('valPrestigeExp').textContent = s.prestigeExponent.toFixed(2);
       document.getElementById('inpPrestigeScale').value = s.prestigeScale;
       document.getElementById('valPrestigeScale').textContent = '+' + Math.round(s.prestigeScale * 100) + '%';
+      document.getElementById('lblGeneratorCount').textContent = s.generators.length;
 
+      // Render Multi-Resource Editor List
+      var resContainer = document.getElementById('schemaResourceList');
+      resContainer.innerHTML = '';
+      s.resources.forEach(function(res, rIdx) {
+        var row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1.5 items-center bg-slate-950 p-2 rounded border border-slate-800 text-xs';
+        row.innerHTML = [
+          '<div class="col-span-5">',
+          '  <input type="text" data-res-idx="' + rIdx + '" data-res-field="name" value="' + res.name + '" class="res-input w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white" />',
+          '</div>',
+          '<div class="col-span-2">',
+          '  <input type="text" data-res-idx="' + rIdx + '" data-res-field="symbol" value="' + res.symbol + '" class="res-input w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs mono text-sky-300 text-center" />',
+          '</div>',
+          '<div class="col-span-3 flex items-center gap-1">',
+          '  <span class="text-[10px] text-slate-400">기본+/s</span>',
+          '  <input type="number" step="0.5" data-res-idx="' + rIdx + '" data-res-field="baseSPS" value="' + (res.baseSPS || 0) + '" class="res-input w-full bg-slate-900 border border-slate-700 rounded px-1.5 py-1 text-xs mono text-emerald-300" />',
+          '</div>',
+          '<div class="col-span-2 text-right">',
+          (rIdx === 0
+            ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800 mono">주력</span>'
+            : '<button type="button" data-del-res="' + rIdx + '" class="del-res-btn px-2 py-1 rounded bg-rose-950 hover:bg-rose-900 text-rose-300 text-[11px]">삭제</button>'),
+          '</div>'
+        ].join('');
+        resContainer.appendChild(row);
+      });
+
+      resContainer.querySelectorAll('.res-input').forEach(function(inp) {
+        inp.addEventListener('change', function(e) {
+          var rIdx = parseInt(e.target.getAttribute('data-res-idx'), 10);
+          var field = e.target.getAttribute('data-res-field');
+          if (field === 'baseSPS') {
+            appState.schema.resources[rIdx].baseSPS = parseFloat(e.target.value) || 0;
+          } else {
+            appState.schema.resources[rIdx][field] = e.target.value;
+            if (rIdx === 0 && field === 'name') appState.schema.currencyName = e.target.value;
+            if (rIdx === 0 && field === 'symbol') appState.schema.currencySymbol = e.target.value;
+          }
+          persistState();
+          renderSchemaInputs();
+          runAndRenderSimulation();
+        });
+      });
+
+      resContainer.querySelectorAll('.del-res-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          var rIdx = parseInt(e.currentTarget.getAttribute('data-del-res'), 10);
+          if (rIdx > 0 && appState.schema.resources.length > 1) {
+            var removedId = appState.schema.resources[rIdx].id;
+            appState.schema.resources.splice(rIdx, 1);
+            var fallbackId = appState.schema.resources[0].id;
+            appState.schema.generators.forEach(function(g) {
+              if (g.costResId === removedId) g.costResId = fallbackId;
+              if (g.prodResId === removedId) g.prodResId = fallbackId;
+              if (g.consResId === removedId) { g.consResId = 'none'; g.consPerSec = 0; }
+            });
+            persistState();
+            renderSchemaInputs();
+            runAndRenderSimulation();
+          }
+        });
+      });
+
+      // Build resource <option> HTML helper
+      function buildResOptions(selectedId, includeNone) {
+        var opts = [];
+        if (includeNone) {
+          opts.push('<option value="none"' + (selectedId === 'none' ? ' selected' : '') + '>소모 없음 (None)</option>');
+        }
+        s.resources.forEach(function(r) {
+          opts.push('<option value="' + r.id + '"' + (selectedId === r.id ? ' selected' : '') + '>' + r.symbol + ' (' + r.name.split(' ')[0] + ')</option>');
+        });
+        return opts.join('');
+      }
+
+      // Render Dynamic Generators List
       var container = document.getElementById('schemaGeneratorList');
       container.innerHTML = '';
 
@@ -1628,41 +2016,82 @@
         var card = document.createElement('div');
         card.className = 'bg-slate-900 rounded-lg p-3 border border-slate-800 space-y-2';
         card.innerHTML = [
-          '<div class="flex items-center justify-between">',
-          '  <span class="text-xs font-bold text-white">' + (idx + 1) + '. ' + gen.name + '</span>',
-          '  <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-sky-300 mono">' + gen.category + '</span>',
+          '<div class="flex items-center justify-between gap-2">',
+          '  <div class="flex items-center gap-1.5 flex-1">',
+          '    <span class="text-xs font-extrabold text-blue-400 mono">#' + (idx + 1) + '</span>',
+          '    <input type="text" data-gen-idx="' + idx + '" data-field="name" value="' + gen.name + '" class="gen-input flex-1 bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs font-bold text-white" />',
+          '  </div>',
+          (s.generators.length > 1
+            ? '<button type="button" data-del-gen="' + idx + '" class="del-gen-btn px-2 py-1 rounded bg-rose-950 hover:bg-rose-900 text-rose-300 text-xs border border-rose-800">삭제</button>'
+            : '<span class="text-[10px] text-slate-500 mono">필수 코어</span>'),
           '</div>',
           '<div class="grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-2 text-xs">',
           '  <div>',
-          '    <label class="block text-[11px] text-slate-400">기본 비용(BaseCost)</label>',
+          '    <label class="block text-[11px] text-slate-400">구매 자원</label>',
+          '    <select data-gen-idx="' + idx + '" data-field="costResId" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-xs text-slate-200 mt-0.5">' + buildResOptions(gen.costResId, false) + '</select>',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-slate-400">기본 비용(Cost)</label>',
           '    <input type="number" data-gen-idx="' + idx + '" data-field="baseCost" value="' + gen.baseCost + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-white mt-0.5" />',
           '  </div>',
           '  <div>',
-          '    <label class="block text-[11px] text-slate-400">증가율(Growth)</label>',
+          '    <label class="block text-[11px] text-slate-400">비용 증가율(Growth)</label>',
           '    <input type="number" step="0.01" min="1.05" max="1.80" data-gen-idx="' + idx + '" data-field="costGrowth" value="' + gen.costGrowth + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-emerald-300 mt-0.5" />',
           '  </div>',
           '  <div>',
-          '    <label class="block text-[11px] text-slate-400">기본 생산(BaseSPS)</label>',
+          '    <label class="block text-[11px] text-slate-400">소프트캡(Lv)</label>',
+          '    <input type="number" step="5" data-gen-idx="' + idx + '" data-field="softcapLevel" value="' + gen.softcapLevel + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-amber-300 mt-0.5" />',
+          '  </div>',
+          '</div>',
+          '<div class="grid grid-cols-2 sm:grid-cols-4 sm-grid-4 gap-2 text-xs pt-1 border-t border-slate-800">',
+          '  <div>',
+          '    <label class="block text-[11px] text-sky-300">생산 자원(+/s)</label>',
+          '    <select data-gen-idx="' + idx + '" data-field="prodResId" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-xs text-sky-200 mt-0.5">' + buildResOptions(gen.prodResId, false) + '</select>',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-sky-300">초당 생산량(+SPS)</label>',
           '    <input type="number" step="0.5" data-gen-idx="' + idx + '" data-field="baseProd" value="' + gen.baseProd + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-sky-300 mt-0.5" />',
           '  </div>',
           '  <div>',
-          '    <label class="block text-[11px] text-slate-400">소프트캡(Softcap Lv)</label>',
-          '    <input type="number" step="5" data-gen-idx="' + idx + '" data-field="softcapLevel" value="' + gen.softcapLevel + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-amber-300 mt-0.5" />',
+          '    <label class="block text-[11px] text-rose-300">소모 자원(-/s)</label>',
+          '    <select data-gen-idx="' + idx + '" data-field="consResId" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-xs text-rose-200 mt-0.5">' + buildResOptions(gen.consResId || 'none', true) + '</select>',
+          '  </div>',
+          '  <div>',
+          '    <label class="block text-[11px] text-rose-300">초당 소모량(-/s)</label>',
+          '    <input type="number" step="0.1" min="0" data-gen-idx="' + idx + '" data-field="consPerSec" value="' + (gen.consPerSec || 0) + '" class="gen-input w-full bg-slate-950 border border-slate-700 rounded px-2 py-1 text-xs mono text-rose-300 mt-0.5" />',
           '  </div>',
           '</div>'
         ].join('');
         container.appendChild(card);
       });
 
-      var inputs = container.querySelectorAll('.gen-input');
-      inputs.forEach(function(inp) {
+      container.querySelectorAll('.gen-input').forEach(function(inp) {
         inp.addEventListener('change', function(e) {
           var idx = parseInt(e.target.getAttribute('data-gen-idx'), 10);
           var field = e.target.getAttribute('data-field');
-          var val = parseFloat(e.target.value);
-          if (!isNaN(val) && val > 0) {
-            appState.schema.generators[idx][field] = val;
+          if (field === 'name' || field === 'costResId' || field === 'prodResId' || field === 'consResId') {
+            appState.schema.generators[idx][field] = e.target.value;
+          } else {
+            var val = parseFloat(e.target.value);
+            if (!isNaN(val) && val >= 0) {
+              appState.schema.generators[idx][field] = val;
+            }
+          }
+          persistState();
+          runAndRenderSimulation();
+        });
+      });
+
+      container.querySelectorAll('.del-gen-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          var idx = parseInt(e.currentTarget.getAttribute('data-del-gen'), 10);
+          if (appState.schema.generators.length > 1) {
+            var removed = appState.schema.generators.splice(idx, 1)[0];
+            if (removed && appState.sandbox.levels[removed.id] !== undefined) {
+              delete appState.sandbox.levels[removed.id];
+            }
             persistState();
+            renderSchemaInputs();
             runAndRenderSimulation();
           }
         });
@@ -1670,28 +2099,81 @@
     }
 
     function runAndRenderSimulation() {
-      var sim = runVarianceSimulation(appState.schema, appState.simHorizonMin, 60);
+      var targetMin = Math.round((appState.schema.targetPlaytimeHours || 4.0) * 60);
+      var horizon = Math.max(appState.simHorizonMin, targetMin);
+      var sim = runVarianceSimulation(appState.schema, horizon, 60);
       appState.simResults = sim;
+      var s = appState.schema;
+      var rec = sim.targetRecommendation;
+
+      // Update Step 1 Target Playtime Goal-Seek Recommendation Banner
+      document.getElementById('lblRecTargetH').textContent = rec.targetPlaytimeHours.toFixed(1);
+      document.getElementById('lblRecommendedClearGoal').textContent =
+        formatNum(rec.recommendedClearGoal, s.precision) + ' ' + s.currencySymbol;
+      document.getElementById('lblRecommendedPrestige').textContent =
+        formatNum(rec.recommendedPrestigeThreshold, s.precision) + ' ' + s.currencySymbol;
+      document.getElementById('lblRecommendedBand').textContent =
+        formatNum(rec.worstGoalAtTarget, s.precision) + ' ~ ' + formatNum(rec.optimalGoalAtTarget, s.precision);
+
+      var cpContainer = document.getElementById('playtimeCheckpointCards');
+      cpContainer.innerHTML = '';
+      rec.checkpoints.forEach(function(cp) {
+        var box = document.createElement('div');
+        box.className = 'bg-slate-950 p-2.5 rounded-lg border border-slate-800 space-y-1';
+        box.innerHTML = [
+          '<div class="flex items-center justify-between text-[11px] text-slate-400">',
+          '  <span class="font-bold text-sky-300">' + cp.timeHours + '시간 (' + cp.ratioPct + '%)</span>',
+          '  <span class="mono">' + cp.timeMin + 'm</span>',
+          '</div>',
+          '<div class="text-xs font-extrabold text-white mono">누적: ' + formatNum(cp.expectedLifetime, s.precision) + '</div>',
+          '<div class="text-[11px] text-emerald-400 mono">+' + formatNum(cp.expectedSPS, s.precision) + '/s</div>'
+        ].join('');
+        cpContainer.appendChild(box);
+      });
 
       // Update KPI Cards
-      document.getElementById('kpiOptimalClear').textContent = sim.optimal.clearTimeMin + ' 분';
+      document.getElementById('kpiOptimalClear').textContent = sim.optimal.clearTimeMin + ' 분 (' + (sim.optimal.clearTimeMin / 60).toFixed(1) + 'h)';
       document.getElementById('kpiOptimalPrestige').textContent =
         '첫 환생: ' + sim.optimal.firstPrestigeMin + '분 | 환생 ' + sim.optimal.prestigeEvents.length + '회';
 
-      document.getElementById('kpiNormalClear').textContent = sim.normal.clearTimeMin + ' 분';
+      document.getElementById('kpiNormalClear').textContent = sim.normal.clearTimeMin + ' 분 (' + (sim.normal.clearTimeMin / 60).toFixed(1) + 'h)';
       document.getElementById('kpiNormalPrestige').textContent =
         '첫 환생: ' + sim.normal.firstPrestigeMin + '분 | 환생 ' + sim.normal.prestigeEvents.length + '회';
 
-      document.getElementById('kpiRandomClear').textContent = sim.random.clearTimeMin + ' 분';
+      document.getElementById('kpiRandomClear').textContent = sim.random.clearTimeMin + ' 분 (' + (sim.random.clearTimeMin / 60).toFixed(1) + 'h)';
       document.getElementById('kpiRandomPrestige').textContent =
         '첫 환생: ' + sim.random.firstPrestigeMin + '분 | 확률 편차 대역';
 
-      document.getElementById('kpiWorstClear').textContent = sim.worst.clearTimeMin + ' 분';
+      document.getElementById('kpiWorstClear').textContent = sim.worst.clearTimeMin + ' 분 (' + (sim.worst.clearTimeMin / 60).toFixed(1) + 'h)';
       document.getElementById('kpiWorstPrestige').textContent =
         '첫 환생: ' + sim.worst.firstPrestigeMin + '분 | 정체 벽 ' + sim.worst.wallEvents.length + '회';
 
       var spread = (sim.worst.clearTimeMin / Math.max(1, sim.optimal.clearTimeMin)).toFixed(2);
       document.getElementById('lblSpreadRatio').textContent = spread + '×';
+
+      // Render Multi-Resource Flow Table (Production vs Consumption per second)
+      var flowTable = document.getElementById('multiResourceFlowTable');
+      flowTable.innerHTML = '';
+      var flows = sim.normal.finalFlows || {};
+      s.resources.forEach(function(r) {
+        var fl = flows[r.id] || { grossProd: 0, totalCons: 0, netSPS: 0, supplyRatio: 1.0, isBottleneck: false };
+        var card = document.createElement('div');
+        card.className = 'bg-slate-950 p-2.5 rounded border ' + (fl.isBottleneck ? 'border-rose-700' : 'border-slate-800') + ' space-y-1';
+        card.innerHTML = [
+          '<div class="flex items-center justify-between">',
+          '  <span class="font-bold text-white">' + r.name + ' (' + r.symbol + ')</span>',
+          (fl.isBottleneck
+            ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 mono">소모 병목 (' + Math.round(fl.supplyRatio * 100) + '%)</span>'
+            : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono">공급 원활 (100%)</span>'),
+          '</div>',
+          '<div class="flex items-center justify-between text-[11px] mono">',
+          '  <span class="text-emerald-400">생산: +' + formatNum(fl.grossProd, s.precision) + '/s</span>',
+          '  <span class="text-rose-400">소모: -' + formatNum(fl.totalCons, s.precision) + '/s</span>',
+          '</div>',
+          '<div class="text-xs font-bold mono ' + (fl.netSPS >= 0 ? 'text-sky-300' : 'text-rose-400') + '">순수익(Net): ' + (fl.netSPS >= 0 ? '+' : '') + formatNum(fl.netSPS, s.precision) + ' ' + r.symbol + '/s</div>'
+        ].join('');
+        flowTable.appendChild(card);
+      });
 
       var healthBadge = document.getElementById('badgeBalanceHealth');
       if (spread > 6.5) {
@@ -1702,12 +2184,11 @@
         healthBadge.className = 'text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 mono';
       }
 
-      // Render Diagnostics List
       var diagEl = document.getElementById('wallDiagnosticsList');
       diagEl.innerHTML = '';
       var allWalls = sim.normal.wallEvents.concat(sim.worst.wallEvents).slice(0, 4);
       if (allWalls.length === 0) {
-        diagEl.innerHTML = '<div class="text-emerald-400">심각한 성장 정체 벽(120초 이상 대기)이 발견되지 않았습니다.</div>';
+        diagEl.innerHTML = '<div class="text-emerald-400">심각한 성장 정체 벽(90초 이상 대기)이 발견되지 않았습니다.</div>';
       } else {
         allWalls.forEach(function(w) {
           var row = document.createElement('div');
@@ -1718,11 +2199,11 @@
         });
       }
 
-      drawEconomyVarianceChart(sim);
+      drawEconomyVarianceChart(sim, horizon);
       drawPrestigeCycleChart(sim);
     }
 
-    function drawEconomyVarianceChart(sim) {
+    function drawEconomyVarianceChart(sim, horizonMin) {
       var canvas = document.getElementById('economyVarianceCanvas');
       if (!canvas) return;
       var rect = canvas.parentElement.getBoundingClientRect();
@@ -1784,6 +2265,23 @@
         ctx.fillText(labelTxt, 4, gy + 3);
       }
 
+      // Draw Target Playtime Vertical Marker Line
+      var targetMin = (appState.schema.targetPlaytimeHours || 4.0) * 60;
+      var totalHMin = horizonMin || appState.simHorizonMin;
+      if (targetMin <= totalHMin) {
+        var targetX = padL + (targetMin / Math.max(1, totalHMin)) * plotW;
+        ctx.save();
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.moveTo(targetX, padT);
+        ctx.lineTo(targetX, padT + plotH);
+        ctx.stroke();
+        ctx.fillStyle = '#7dd3fc';
+        ctx.fillText('목표 ' + appState.schema.targetPlaytimeHours + 'h (' + Math.round(targetMin) + 'm)', Math.max(padL + 4, targetX - 75), padT + 12);
+        ctx.restore();
+      }
+
       // Draw Clear Goal Horizontal Dashed Line
       var goalY = toY(appState.schema.clearGoal);
       if (goalY >= padT && goalY <= padT + plotH) {
@@ -1836,10 +2334,9 @@
         }
         ctx.stroke();
 
-        // Draw Prestige Markers (P1, P2...) on Optimal and Normal curves
         if (p === 'optimal' || p === 'normal') {
           sim[p].prestigeEvents.forEach(function(pe) {
-            var ratio = pe.timeMin / appState.simHorizonMin;
+            var ratio = pe.timeMin / totalHMin;
             var px = padL + ratio * plotW;
             var sampleIdx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
             var py = toY(pts[sampleIdx].lifetimeCurrency);
@@ -1857,7 +2354,7 @@
       ctx.fillStyle = '#94a3b8';
       for (var tStep = 0; tStep <= 4; tStep++) {
         var tx = padL + (tStep / 4) * plotW;
-        var tMin = Math.round((tStep / 4) * appState.simHorizonMin);
+        var tMin = Math.round((tStep / 4) * totalHMin);
         ctx.fillText(tMin + '분', tx - 12, height - 8);
       }
     }
@@ -1946,7 +2443,6 @@
       document.getElementById('rngWaveMult').value = ab.waveClearBonusMult;
       document.getElementById('valWaveMult').textContent = ab.waveClearBonusMult + '× SPS';
 
-      // Calculate Passive vs Action share at mid-game reference state
       var sampleLevels = {};
       appState.schema.generators.forEach(function(g, idx) {
         sampleLevels[g.id] = Math.max(1, Math.round((appState.statPreviewSlider / 100) * 60 / (idx + 1)));
@@ -1966,7 +2462,6 @@
       barA.style.width = Math.max(10, actionPct) + '%';
       barA.textContent = '액션 ' + actionPct + '%';
 
-      // Compute Stat Mappings at synthetic preview stage
       var totalLv = Object.keys(sampleLevels).reduce(function(a, k) { return a + sampleLevels[k]; }, 0);
       var simLifetime = Math.pow(10, (appState.statPreviewSlider / 100) * 10);
       document.getElementById('lblStatPreviewStage').textContent =
@@ -2020,7 +2515,6 @@
       var plotW = width - padL - padR;
       var plotH = height - padT - padB;
 
-      // Asymptotic curve from raw = 0 to raw = halfPoint * 5
       var maxX = sampleStat.halfPoint * 5;
       ctx.strokeStyle = '#1e293b';
       ctx.strokeRect(padL, padT, plotW, plotH);
@@ -2039,7 +2533,6 @@
       }
       ctx.stroke();
 
-      // Current marker
       var currX = Math.min(maxX, sampleStat.rawInput);
       var currPx = padL + (currX / maxX) * plotW;
       var currPy = padT + plotH - (sampleStat.progressPct / 100) * plotH;
@@ -2059,9 +2552,10 @@
     // TAB 3 RENDERER: WEB LIVE PROTOTYPER & ROI SANDBOX
     // =========================================================================
     function renderSandboxUI() {
-      var s = appState.schema;
+      var s = normalizeSchema(appState.schema);
       var sb = appState.sandbox;
-      var passiveSPS = calcPassiveSPS(s, sb.levels, sb.prestigeMult);
+      var flows = calcMultiResourceFlows(s, sb.levels, sb.prestigeMult, sb.resourcePools);
+      var passiveSPS = calcPassiveSPS(s, sb.levels, sb.prestigeMult, sb.resourcePools);
       var actionExpectedSPS = calcActionBridgeExpectedSPS(s, passiveSPS, sb.prestigeMult, 1.0);
       var totalSPS = passiveSPS + actionExpectedSPS;
 
@@ -2075,7 +2569,20 @@
       var secs = Math.floor(sb.elapsedSec % 60);
       document.getElementById('sandboxElapsedTime').textContent = mins + '분 ' + secs + '초';
 
-      // Click & Action button labels
+      // Render Multi-Resource Strip in Sandbox
+      var resStrip = document.getElementById('sandboxResourceStrip');
+      resStrip.innerHTML = '';
+      s.resources.forEach(function(r, idx) {
+        var amt = (idx === 0) ? sb.currency : (sb.resourcePools[r.id] || 0);
+        var fl = flows[r.id] || { netSPS: 0, totalCons: 0, isBottleneck: false };
+        var item = document.createElement('div');
+        item.className = 'bg-slate-950 px-3 py-2 rounded-lg border ' + (fl.isBottleneck ? 'border-rose-700' : 'border-slate-800') + ' flex items-center justify-between';
+        item.innerHTML = '<div><div class="font-bold text-white">' + r.name + '</div><div class="text-[11px] text-slate-400 mono">초당 소모: -' + formatNum(fl.totalCons, s.precision) + '/s</div></div>' +
+                         '<div class="text-right mono"><div class="text-sm font-extrabold text-sky-300">' + formatNum(amt, s.precision) + ' ' + r.symbol + '</div>' +
+                         '<div class="text-[11px] ' + (fl.netSPS >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + (fl.netSPS >= 0 ? '+' : '') + formatNum(fl.netSPS, s.precision) + '/s</div></div>';
+        resStrip.appendChild(item);
+      });
+
       var clickGain = s.clickBase * sb.prestigeMult;
       document.getElementById('lblManualClickGain').textContent = '+' + formatNum(clickGain, s.precision) + ' ' + s.currencySymbol + ' 획득';
 
@@ -2085,13 +2592,11 @@
       var waveGain = passiveSPS * s.actionBridge.waveClearBonusMult;
       document.getElementById('lblWaveClearGain').textContent = '+' + formatNum(waveGain, s.precision) + ' ' + s.currencySymbol;
 
-      // Prestige button state
       var pendingPts = calcPrestigeGain(s, sb.runCurrency);
       var btnPrestige = document.getElementById('btnSandboxPrestige');
       document.getElementById('lblPendingPrestige').textContent = '+' + pendingPts + ' ' + s.prestigeCurrencyName.split(' ')[0];
       btnPrestige.disabled = (pendingPts <= 0);
 
-      // Mapped live stats
       var mappedStats = computeStatMappings(s, sb);
       var statsGrid = document.getElementById('sandboxLiveMappedStats');
       statsGrid.innerHTML = '';
@@ -2103,7 +2608,6 @@
         statsGrid.appendChild(box);
       });
 
-      // Generator Purchase Cards with Live ROI & Payback Highlighting
       var roiList = evaluateROIList(s, sb);
       var genContainer = document.getElementById('sandboxGeneratorCards');
       genContainer.innerHTML = '';
@@ -2127,6 +2631,16 @@
           badgeHtml = '<span class="text-[11px] px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 mono">최저 효율</span>';
         }
 
+        var prodResObj = s.resources.find(function(r) { return r.id === item.prodResId; }) || s.resources[0];
+        var costResObj = s.resources.find(function(r) { return r.id === item.costResId; }) || s.resources[0];
+        var consResObj = (item.consResId && item.consResId !== 'none')
+          ? s.resources.find(function(r) { return r.id === item.consResId; })
+          : null;
+
+        var consText = consResObj
+          ? '<span>초당 소모: <strong class="text-rose-400">-' + (item.consPerSec * Math.max(1, item.level)).toFixed(1) + ' ' + consResObj.symbol + '/s</strong></span>'
+          : '<span>초당 소모: <strong class="text-slate-500">없음</strong></span>';
+
         card.innerHTML = [
           '<div class="space-y-1">',
           '  <div class="flex flex-wrap items-center gap-2">',
@@ -2135,14 +2649,14 @@
                badgeHtml,
           '  </div>',
           '  <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 mono">',
-          '    <span>생산 증가: <strong class="text-emerald-300">+' + formatNum(item.deltaSPS, s.precision) + '/s</strong></span>',
-          '    <span>본전 회수(Payback): <strong class="text-sky-300">' + item.paybackSec.toFixed(1) + '초</strong></span>',
-          '    <span>효율(ΔSPS÷Cost): <strong class="text-amber-300">' + (item.roi * 100).toFixed(2) + '%/s</strong></span>',
+          '    <span>생산: <strong class="text-emerald-300">+' + formatNum(item.deltaSPS, s.precision) + ' ' + prodResObj.symbol + '/s</strong></span>',
+               consText,
+          '    <span>회수(Payback): <strong class="text-sky-300">' + item.paybackSec.toFixed(1) + '초</strong></span>',
           '  </div>',
           '</div>',
           '<button type="button" data-buy-id="' + item.id + '" ' + (item.affordable ? '' : 'disabled') + ' class="buy-gen-btn px-4 py-2.5 min-h-[44px] rounded-lg font-bold text-xs mono transition ' +
             (item.affordable ? 'bg-blue-600 hover:bg-blue-500 text-white shadow' : 'bg-slate-800 text-slate-500 cursor-not-allowed') + '">',
-          '  구매 (' + formatNum(item.cost, s.precision) + ' ' + s.currencySymbol + ')',
+          '  구매 (' + formatNum(item.cost, s.precision) + ' ' + costResObj.symbol + ')',
           '</button>'
         ].join('');
         genContainer.appendChild(card);
@@ -2158,12 +2672,21 @@
     }
 
     function tryBuyInSandbox(genId) {
-      var gen = appState.schema.generators.find(function(g) { return g.id === genId; });
+      var s = normalizeSchema(appState.schema);
+      var gen = s.generators.find(function(g) { return g.id === genId; });
       if (!gen) return false;
       var lvl = appState.sandbox.levels[genId] || 0;
       var cost = calcGeneratorCost(gen, lvl);
-      if (appState.sandbox.currency < cost) return false;
-      appState.sandbox.currency -= cost;
+      var primaryId = s.resources[0].id;
+      var costResId = gen.costResId || primaryId;
+      var avail = (costResId === primaryId) ? appState.sandbox.currency : (appState.sandbox.resourcePools[costResId] || 0);
+      if (avail < cost) return false;
+      if (costResId === primaryId) {
+        appState.sandbox.currency -= cost;
+        appState.sandbox.resourcePools[primaryId] = appState.sandbox.currency;
+      } else {
+        appState.sandbox.resourcePools[costResId] -= cost;
+      }
       appState.sandbox.levels[genId] = lvl + 1;
       persistState();
       if (appState.activeTab === 'sandbox') renderSandboxUI();
@@ -2200,6 +2723,8 @@
       if (PRESET_SCHEMAS[newPreset]) {
         appState.presetId = newPreset;
         appState.schema = cloneDeep(PRESET_SCHEMAS[newPreset]);
+        appState.simHorizonMin = Math.round((appState.schema.targetPlaytimeHours || 4.0) * 60);
+        document.getElementById('simHorizonSelect').value = String(appState.simHorizonMin);
         resetSandboxState();
         persistState();
         renderSchemaInputs();
@@ -2208,6 +2733,88 @@
         if (appState.activeTab === 'sandbox') renderSandboxUI();
         if (appState.activeTab === 'export') renderExporterUI();
       }
+    });
+
+    // Step 1 Target Playtime Hours Input & Goal-Seek Apply Button
+    document.getElementById('inpTargetPlaytimeHours').addEventListener('change', function(e) {
+      var h = parseFloat(e.target.value);
+      if (!isNaN(h) && h >= 0.5 && h <= 200) {
+        appState.schema.targetPlaytimeHours = h;
+        appState.simHorizonMin = Math.round(h * 60);
+        document.getElementById('lblTargetPlaytimeMin').textContent = appState.simHorizonMin;
+        persistState();
+        runAndRenderSimulation();
+      }
+    });
+
+    document.getElementById('btnApplyRecommendedGoal').addEventListener('click', function() {
+      if (appState.simResults && appState.simResults.targetRecommendation) {
+        var rec = appState.simResults.targetRecommendation;
+        appState.schema.clearGoal = Math.max(1000, Math.round(rec.recommendedClearGoal));
+        appState.schema.prestigeThreshold = Math.max(500, Math.round(rec.recommendedPrestigeThreshold));
+        document.getElementById('inpClearGoal').value = appState.schema.clearGoal;
+        document.getElementById('inpPrestigeThreshold').value = appState.schema.prestigeThreshold;
+        persistState();
+        runAndRenderSimulation();
+      }
+    });
+
+    // Step 2 Add Resource / Add Generator / Auto-Scale Upgrades
+    document.getElementById('btnAddResource').addEventListener('click', function() {
+      var nextIdx = appState.schema.resources.length + 1;
+      var newId = 'res_custom_' + Date.now().toString().slice(-4) + '_' + nextIdx;
+      appState.schema.resources.push({
+        id: newId,
+        name: 'Custom Res ' + nextIdx + ' (자원 ' + nextIdx + ')',
+        symbol: 'R' + nextIdx,
+        baseSPS: 2.0
+      });
+      appState.sandbox.resourcePools[newId] = 0;
+      persistState();
+      renderSchemaInputs();
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('btnAddGenerator').addEventListener('click', function() {
+      var s = appState.schema;
+      var idx = s.generators.length;
+      var lastGen = s.generators[idx - 1] || { baseCost: 10, costGrowth: 1.15, baseProd: 1.0, softcapLevel: 50 };
+      var primaryId = s.resources[0].id;
+      var secId = s.resources[1] ? s.resources[1].id : 'none';
+      var newGenId = 'gen_tier_' + (idx + 1) + '_' + Date.now().toString().slice(-3);
+
+      s.generators.push({
+        id: newGenId,
+        name: 'Custom Upgrade #' + (idx + 1) + ' (신규 업그레이드)',
+        baseCost: Math.round(lastGen.baseCost * 8.5),
+        costGrowth: Number(Math.min(1.35, lastGen.costGrowth + 0.02).toFixed(2)),
+        costResId: primaryId,
+        prodResId: primaryId,
+        baseProd: Number((lastGen.baseProd * 6.5).toFixed(1)),
+        consResId: secId,
+        consPerSec: secId !== 'none' ? Number(((idx + 1) * 0.5).toFixed(1)) : 0,
+        softcapLevel: Math.max(30, lastGen.softcapLevel - 5),
+        softcapPenalty: 0.55,
+        category: 'Tier ' + (idx + 1)
+      });
+      appState.sandbox.levels[newGenId] = 0;
+      persistState();
+      renderSchemaInputs();
+      runAndRenderSimulation();
+    });
+
+    document.getElementById('btnAutoScaleUpgrades').addEventListener('click', function() {
+      var s = appState.schema;
+      var targetHours = s.targetPlaytimeHours || 4.0;
+      var scaleFactor = Math.pow(targetHours / 4.0, 0.35);
+      s.generators.forEach(function(g, idx) {
+        g.baseCost = Math.round(15 * Math.pow(7.5 * scaleFactor, idx));
+        g.costGrowth = Number((1.13 + idx * 0.018).toFixed(2));
+        g.baseProd = Number((1.5 * Math.pow(5.8, idx)).toFixed(1));
+      });
+      persistState();
+      renderSchemaInputs();
+      runAndRenderSimulation();
     });
 
     document.getElementById('btnTogglePrecision').addEventListener('click', function() {
@@ -2238,7 +2845,7 @@
 
     document.getElementById('inpClearGoal').addEventListener('change', function(e) {
       var v = parseFloat(e.target.value);
-      if (v > 1000) {
+      if (v > 100) {
         appState.schema.clearGoal = v;
         persistState();
         runAndRenderSimulation();
@@ -2262,7 +2869,7 @@
     });
 
     document.getElementById('simHorizonSelect').addEventListener('change', function(e) {
-      appState.simHorizonMin = parseInt(e.target.value, 10) || 120;
+      appState.simHorizonMin = parseInt(e.target.value, 10) || 240;
       runAndRenderSimulation();
     });
 
@@ -2338,31 +2945,37 @@
 
     document.getElementById('btnManualClick').addEventListener('click', function() {
       var gain = appState.schema.clickBase * appState.sandbox.prestigeMult;
+      var primaryId = appState.schema.resources[0].id;
       appState.sandbox.currency += gain;
       appState.sandbox.runCurrency += gain;
       appState.sandbox.lifetimeCurrency += gain;
+      appState.sandbox.resourcePools[primaryId] = appState.sandbox.currency;
       renderSandboxUI();
     });
 
     document.getElementById('btnTriggerKillEvent').addEventListener('click', function() {
       var ab = appState.schema.actionBridge;
-      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult);
+      var primaryId = appState.schema.resources[0].id;
+      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult, appState.sandbox.resourcePools);
       var isCrit = Math.random() < ab.critChance;
       var reward = (ab.rewardBase * appState.sandbox.prestigeMult) + (sps * ab.spsRatioBonus);
       if (isCrit) reward *= ab.critMultiplier;
       appState.sandbox.currency += reward;
       appState.sandbox.runCurrency += reward;
       appState.sandbox.lifetimeCurrency += reward;
+      appState.sandbox.resourcePools[primaryId] = appState.sandbox.currency;
       renderSandboxUI();
     });
 
     document.getElementById('btnTriggerWaveClear').addEventListener('click', function() {
       var ab = appState.schema.actionBridge;
-      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult);
+      var primaryId = appState.schema.resources[0].id;
+      var sps = calcPassiveSPS(appState.schema, appState.sandbox.levels, appState.sandbox.prestigeMult, appState.sandbox.resourcePools);
       var reward = Math.max(25, sps * ab.waveClearBonusMult);
       appState.sandbox.currency += reward;
       appState.sandbox.runCurrency += reward;
       appState.sandbox.lifetimeCurrency += reward;
+      appState.sandbox.resourcePools[primaryId] = appState.sandbox.currency;
       renderSandboxUI();
     });
 
@@ -2408,7 +3021,7 @@
       });
     });
 
-    // Save / Snapshot Modal Controls (with backdrop click & ESC support)
+    // Save / Snapshot Modal Controls
     var saveModalBackdrop = document.getElementById('saveModalBackdrop');
     var saveModalPanel = document.getElementById('saveModalPanel');
 
@@ -2457,8 +3070,8 @@
       var decoded = StorageAdapter.decodeToken(raw);
       var msg = document.getElementById('modalFeedbackMsg');
       if (decoded && decoded.schema) {
-        appState.presetId = decoded.presetId || 'vampire_survivor';
-        appState.schema = decoded.schema;
+        appState.presetId = decoded.presetId || 'custom_4h_builder';
+        appState.schema = normalizeSchema(decoded.schema);
         if (decoded.sandbox) appState.sandbox = decoded.sandbox;
         persistState();
         renderSchemaInputs();
@@ -2471,21 +3084,32 @@
       }
     });
 
-    // Real-time Sandbox Loop (runs at 4 ticks per second)
+    // Real-time Sandbox Loop
     var sandboxInterval = null;
     function startSandboxLoop() {
       if (sandboxInterval) clearInterval(sandboxInterval);
       sandboxInterval = setInterval(function() {
         var dt = 0.25 * appState.sandbox.speedMult;
-        var s = appState.schema;
+        var s = normalizeSchema(appState.schema);
         var sb = appState.sandbox;
-        var passiveSPS = calcPassiveSPS(s, sb.levels, sb.prestigeMult);
+        var primaryId = s.resources[0].id;
+        var flows = calcMultiResourceFlows(s, sb.levels, sb.prestigeMult, sb.resourcePools);
+        var passiveSPS = Math.max(0, flows[primaryId] ? flows[primaryId].netSPS : 0);
         var actionSPS = calcActionBridgeExpectedSPS(s, passiveSPS, sb.prestigeMult, 1.0);
         var gained = (passiveSPS + actionSPS) * dt;
 
         sb.currency += gained;
         sb.runCurrency += gained;
         sb.lifetimeCurrency += gained;
+        sb.resourcePools[primaryId] = sb.currency;
+
+        for (var i = 0; i < s.resources.length; i++) {
+          var r = s.resources[i];
+          if (r.id !== primaryId) {
+            var net = flows[r.id] ? flows[r.id].netSPS : 0;
+            sb.resourcePools[r.id] = Math.max(0, (sb.resourcePools[r.id] || 0) + net * dt);
+          }
+        }
         sb.elapsedSec += dt;
 
         if (sb.botMode !== 'manual') {
@@ -2513,14 +3137,13 @@
 
     window.addEventListener('resize', function() {
       if (appState.activeTab === 'schema' && appState.simResults) {
-        drawEconomyVarianceChart(appState.simResults);
+        drawEconomyVarianceChart(appState.simResults, appState.simHorizonMin);
         drawPrestigeCycleChart(appState.simResults);
       } else if (appState.activeTab === 'bridge') {
         renderBridgeAndStatMapper();
       }
     });
 
-    // Expose clean test helper hook for automated verification
     window.__IDLEFORGE_APP__ = {
       switchTab: switchTab,
       openSaveModal: openSaveModal,
@@ -2528,7 +3151,6 @@
       getState: function() { return appState; }
     };
 
-    // Initial Bootstrap
     window.addEventListener('load', function() {
       renderSchemaInputs();
       runAndRenderSimulation();
